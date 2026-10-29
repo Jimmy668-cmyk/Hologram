@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>NOVA AI ULTRA & HOLOLAB MERGED ENGINE v7.0</title>
+<title>HOLOLAB V15 — Iron Projection Deck</title>
+<script>
+/* mobile diagnostics: shows the first script/load error on screen so it can be screenshotted */
+(function(){var shown=0;function show(m){if(shown++>2)return;var d=document.createElement('div');d.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:2147483647;background:#300;color:#ffd0d0;font:11px/1.4 monospace;padding:8px 10px;white-space:pre-wrap;max-height:35vh;overflow:auto';d.textContent='⚠ HOLOLAB ERROR (tap to dismiss)\n'+m;d.onclick=function(){d.remove()};(document.body||document.documentElement).appendChild(d);}
+window.addEventListener('error',function(e){if(e.target&&e.target!==window&&(e.target.src||e.target.href)){show('Failed to load: '+(e.target.src||e.target.href));return;}show((e.message||'error')+(e.filename?'\n'+e.filename.split('/').pop()+':'+e.lineno:''));},true);
+window.addEventListener('unhandledrejection',function(e){show('Promise: '+(e.reason&&e.reason.message||e.reason));});})();
+</script>
+
 <!-- Google Fonts & Three.js Libraries -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -13,6 +20,18 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script>
+/* CDN fallback: same Three.js r128 files from alternate hosts if the primary load failed */
+(function(){
+ var B=['https://unpkg.com/three@0.128.0/','https://cdn.jsdelivr.net/npm/three@0.128.0/'];
+ function w(u){document.write('<scr'+'ipt src="'+u+'"></scr'+'ipt>');}
+ if(!window.THREE){w(B[0]+'build/three.min.js');}
+ if(!window.THREE||!THREE.EffectComposer||!THREE.UnrealBloomPass){
+   /* order matters: shaders before passes */
+   ['shaders/CopyShader.js','shaders/LuminosityHighPassShader.js','postprocessing/EffectComposer.js','postprocessing/RenderPass.js','postprocessing/ShaderPass.js','postprocessing/UnrealBloomPass.js'].forEach(function(f){w(B[0]+'examples/js/'+f);});
+ }
+})();
+</script>
 <style>
 /* ══════════════════════════════════════════════════════════════════
    UNIFIED CSS STYLES — SPACIOUS, CRISP & HOLOGRAPHIC
@@ -81,15 +100,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .tb-date{font-size:8px;color:rgba(0,255,255,.4);letter-spacing:2px;}
 
 /* BOTTOM BAR — EXPANDED HORIZONTAL TOOLBAR */
-#btmBar{position:fixed;bottom:0;left:0;right:0;z-index:20;height:64px;
-  background:linear-gradient(0deg,rgba(0,2,10,.98) 0%,transparent 100%);
-  border-top:1px solid rgba(0,255,255,.1);
-  display:flex;align-items:center;gap:8px;padding:0 18px;overflow-x:auto;scrollbar-width:none;}
+#btmBar{position:fixed;bottom:0;left:0;right:0;z-index:80;min-height:68px;box-sizing:border-box;
+  background:linear-gradient(180deg,rgba(8,10,26,.94),rgba(2,3,13,.985));
+  border-top:1px solid rgba(105,111,255,.32);box-shadow:0 -10px 34px rgba(0,0,0,.38),0 -1px 18px rgba(0,225,255,.06);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  display:flex;align-items:center;gap:8px;padding:10px 14px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(0,225,255,.28) transparent;}
 #btmBar::-webkit-scrollbar{display:none;}
-.hbtn{padding:7px 14px;border-radius:6px;border:1px solid var(--c);background:rgba(0,255,255,.04);
-  color:var(--c);font-family:'Orbitron',monospace;font-size:8px;letter-spacing:1px;font-weight:700;
-  cursor:pointer;transition:all .2s;white-space:nowrap;position:relative;overflow:hidden;}
-.hbtn:hover,.hbtn.on{background:rgba(0,255,255,.15);box-shadow:0 0 16px rgba(0,255,255,.3),inset 0 0 8px rgba(0,255,255,.1);}
+.hbtn{padding:9px 13px;border-radius:9px;border:1px solid rgba(0,225,255,.27);background:linear-gradient(135deg,rgba(0,225,255,.07),rgba(125,75,255,.055));
+  color:var(--c);font-family:'Orbitron',monospace;font-size:8px;letter-spacing:.8px;font-weight:700;
+  cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s,transform .18s;white-space:nowrap;position:relative;flex:0 0 auto;}
+.hbtn:hover,.hbtn.on{background:rgba(0,255,255,.14);border-color:rgba(0,255,255,.72);box-shadow:0 0 15px rgba(0,255,255,.17),inset 0 0 8px rgba(0,255,255,.08);transform:translateY(-1px);}
 .hbtn.g{border-color:var(--c2);color:var(--c2);background:rgba(0,255,157,.04);}
 .hbtn.g:hover,.hbtn.g.on{background:rgba(0,255,157,.15);box-shadow:0 0 16px rgba(0,255,157,.3);}
 .hbtn.y{border-color:var(--c4);color:var(--c4);background:rgba(255,215,0,.04);}
@@ -103,7 +123,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .btm-info{font-size:9px;color:rgba(0,255,255,.4);letter-spacing:1px;max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 /* LEFT PANEL — SPACIOUS & LEGIBLE */
-#lp{position:fixed;left:0;top:60px;bottom:64px;z-index:15;width:240px;
+#lp{position:fixed;left:0;top:60px;bottom:78px;z-index:15;width:240px;
   background:linear-gradient(90deg,rgba(0,2,10,.96) 0%,rgba(0,2,10,.6) 88%,transparent 100%);
   padding:16px 14px;overflow-y:auto;scrollbar-width:none;border-right:1px solid rgba(0,255,255,.08);}
 .sec{margin-bottom:18px;}
@@ -134,7 +154,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .sctrl:hover,.sctrl.on{border-color:var(--c);color:var(--c);background:rgba(0,255,255,.1);box-shadow:0 0 10px rgba(0,255,255,.2);}
 
 /* RIGHT PANEL — SPACIOUS & LEGIBLE */
-#rp{position:fixed;right:0;top:60px;bottom:64px;z-index:15;width:260px;
+#rp{position:fixed;right:0;top:60px;bottom:78px;z-index:15;width:260px;
   background:linear-gradient(270deg,rgba(0,2,10,.96) 0%,rgba(0,2,10,.6) 88%,transparent 100%);
   padding:16px 14px;overflow-y:auto;scrollbar-width:none;border-left:1px solid rgba(0,255,255,.08);}
 .ds-l{font-family:var(--mono);font-size:8px;color:rgba(0,255,255,.45);letter-spacing:1px;line-height:1.7;animation:dsA .3s ease;}
@@ -251,6 +271,28 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 .ls-b{height:100%;background:linear-gradient(90deg,var(--c2),var(--c));box-shadow:0 0 12px var(--c);width:0%;transition:width .18s;}
 .ls-s{margin-top:12px;font-size:9px;color:rgba(0,255,255,.4);letter-spacing:2px;text-align:center;}
 
+
+/* API SETTINGS + SEPARATE MEMORY VAULT */
+#memoryModal,#apiModal{position:fixed;inset:0;z-index:95;background:rgba(0,0,8,.96);backdrop-filter:blur(24px);display:none;align-items:center;justify-content:center;padding:18px;}
+.mem-box,.api-box{width:min(760px,96vw);max-height:88vh;overflow:auto;background:rgba(0,7,22,.99);border:1px solid rgba(0,255,255,.3);border-radius:16px;padding:24px;box-shadow:0 0 55px rgba(0,255,255,.12);color:#b9faff;font-family:var(--mono);}
+.mem-head,.api-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;}
+.mem-title,.api-title{font-family:'Orbitron',monospace;letter-spacing:3px;color:var(--c);font-weight:900;font-size:16px;}
+.mem-close{background:transparent;color:var(--c);border:1px solid rgba(0,255,255,.3);border-radius:6px;padding:6px 10px;cursor:pointer;}
+.mem-note,.api-note{font-size:10px;line-height:1.7;color:rgba(190,240,255,.62);margin:8px 0 14px;}
+.mem-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.mem-input,.api-input,.api-select{min-width:0;flex:1;width:100%;padding:11px 12px;background:rgba(0,0,0,.6);border:1px solid rgba(0,255,255,.25);border-radius:7px;color:#c0f0ff;font-family:var(--mono);font-size:12px;outline:none;}
+.mem-textarea{width:100%;min-height:90px;resize:vertical;padding:12px;background:rgba(0,0,0,.6);border:1px solid rgba(0,255,255,.25);border-radius:7px;color:#c0f0ff;font-family:var(--mono);font-size:12px;outline:none;}
+.mem-action,.api-action{padding:10px 13px;background:rgba(0,255,157,.07);border:1px solid var(--c2);border-radius:7px;color:var(--c2);font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;}
+.mem-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.mem-card{padding:12px;border:1px solid rgba(0,255,255,.18);border-left:3px solid var(--c);border-radius:7px;background:rgba(0,255,255,.025);}
+.mem-card-title{font-family:'Orbitron',monospace;font-size:11px;color:var(--c);margin-bottom:6px;overflow-wrap:anywhere;}
+.mem-card-body{font-size:10px;line-height:1.6;color:rgba(210,245,255,.7);white-space:pre-wrap;overflow-wrap:anywhere;}
+.mem-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;}
+.mem-empty{padding:24px;text-align:center;color:rgba(190,240,255,.45);border:1px dashed rgba(0,255,255,.18);border-radius:8px;font-size:11px;}
+.ai-choice-row{display:flex;gap:8px;margin:10px 0 14px;}
+.ai-choice-row select{flex:1;min-width:0;padding:10px;background:#020914;color:var(--c);border:1px solid rgba(0,255,255,.25);border-radius:7px;font-family:var(--mono);font-size:10px;}
+@media(max-width:600px){.mem-box,.api-box{padding:16px}.mem-title,.api-title{font-size:13px}.mem-row{flex-direction:column}.ai-choice-row{flex-direction:column}}
+
 /* THEMES */
 body.th-c{--c:#00ffff;--c2:#00ff9d;}
 body.th-g{--c:#00ff88;--c2:#00ffcc;}
@@ -343,7 +385,259 @@ body.th-fire{--c:#ff6600;--c2:#ffcc00;}
 .dev-badge.quest{border:1px solid rgba(255,107,53,.35);color:#ff6b35;background:rgba(255,107,53,.05);}
 .dev-badge.phone{border:1px solid rgba(0,212,255,.35);color:#00d4ff;background:rgba(0,212,255,.05);}
 #occlusionCanvas{position:fixed;inset:0;z-index:4;pointer-events:none;display:none;mix-blend-mode:multiply;}
+
+/* ══════════ HOLOLAB AI ASSISTANT (V9) ══════════ */
+#hlaPage{--hv:#9b5cff;--hc:#00e5ff;--hb:#3d7bff;--hp:#ff4fd8;--hg:#6dffb0;--hr:#ff5c7a;
+  position:fixed;inset:0;z-index:58;display:none;flex-direction:column;height:100vh;height:100dvh;color:#e6ecff;
+  font-family:'Rajdhani',sans-serif;
+  background:radial-gradient(ellipse 70% 55% at 12% 0%,rgba(110,40,255,.28),transparent 60%),
+             radial-gradient(ellipse 60% 50% at 95% 100%,rgba(0,150,255,.22),transparent 60%),#04030f;}
+#hlaPage::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(155,92,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.06) 1px,transparent 1px);
+  background-size:42px 42px;-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 85%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 85%);}
+#hlaPage *{box-sizing:border-box;}
+.hla-top{position:relative;display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid rgba(155,92,255,.3);
+  background:linear-gradient(180deg,rgba(14,8,40,.92),rgba(8,5,26,.6));flex-wrap:wrap;}
+.hla-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:15px;letter-spacing:4px;color:var(--hc);text-shadow:0 0 18px rgba(0,229,255,.55);}
+.hla-logo b{color:var(--hv);text-shadow:0 0 18px rgba(155,92,255,.7);}
+.hla-tag{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:rgba(160,180,255,.5);margin-top:2px;}
+.hla-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0;}
+.hla-chip{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:12px;
+  border:1px solid rgba(61,123,255,.45);background:rgba(61,123,255,.1);color:#b8ccff;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;}
+.hla-chip.ok{border-color:rgba(109,255,176,.5);color:var(--hg);background:rgba(109,255,176,.08);}
+.hla-chip.bad{border-color:rgba(255,92,122,.55);color:var(--hr);background:rgba(255,92,122,.08);}
+.hla-chip.vio{border-color:rgba(155,92,255,.55);color:#d3b8ff;background:rgba(155,92,255,.1);}
+.hla-tbtn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1px;font-weight:700;padding:8px 12px;border-radius:7px;cursor:pointer;
+  border:1px solid rgba(155,92,255,.5);background:rgba(155,92,255,.1);color:#d3b8ff;transition:all .2s;}
+.hla-tbtn:hover{background:rgba(155,92,255,.25);box-shadow:0 0 14px rgba(155,92,255,.4);}
+.hla-main{position:relative;flex:1;min-height:0;display:flex;gap:16px;padding:16px 20px;}
+.hla-side{width:290px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;overflow-y:auto;scrollbar-width:none;}
+.hla-side::-webkit-scrollbar{display:none;}
+.hla-orb-wrap{padding:22px 0 8px;text-align:center;}
+.hla-orb{position:relative;width:150px;height:150px;margin:0 auto;}
+.hla-orb i{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--hc);border-bottom-color:var(--hv);animation:hlaSpin 6s linear infinite;}
+.hla-orb i:nth-child(2){inset:13px;border-top-color:var(--hv);border-bottom-color:var(--hb);animation-duration:9s;animation-direction:reverse;}
+.hla-orb i:nth-child(3){inset:-9px;border:1px dashed rgba(0,229,255,.4);animation-duration:24s;}
+.hla-core{position:absolute;inset:34px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff 0,#a8fbff 10%,#5b86ff 42%,#6a2cff 74%,#12063a 100%);
+  box-shadow:0 0 36px rgba(106,44,255,.75),0 0 80px rgba(0,229,255,.35);animation:hlaCore 3.2s ease-in-out infinite;}
+.hla-orb.think i{animation-duration:1.6s;}.hla-orb.think i:nth-child(2){animation-duration:2.4s;}
+.hla-orb.think .hla-core{animation-duration:.8s;}
+.hla-orb-state{margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--hc);}
+@keyframes hlaSpin{to{transform:rotate(360deg)}}
+@keyframes hlaCore{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.07);opacity:1}}
+.hla-sec{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:3px;color:rgba(160,180,255,.55);margin:6px 0 2px;
+  border-bottom:1px solid rgba(155,92,255,.2);padding-bottom:4px;}
+.hla-quick{display:flex;flex-direction:column;gap:7px;}
+.hla-qbtn{text-align:left;padding:10px 12px;border-radius:9px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;letter-spacing:.5px;
+  color:#dfe6ff;border:1px solid rgba(61,123,255,.4);background:linear-gradient(90deg,rgba(61,123,255,.14),rgba(155,92,255,.08));transition:all .2s;}
+.hla-qbtn:hover{border-color:var(--hc);box-shadow:0 0 16px rgba(0,229,255,.25);transform:translateX(3px);}
+.hla-card{font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1.7;color:#aebcf0;padding:10px 12px;border-radius:9px;
+  border:1px solid rgba(155,92,255,.25);background:rgba(10,8,30,.6);overflow-wrap:anywhere;}
+.hla-card b{color:var(--hc);font-weight:normal;}
+.hla-model-controls{display:flex;flex-direction:column;gap:7px;margin:2px 0 8px;}
+.hla-model-controls select,.hla-model-controls input{width:100%;min-width:0;padding:9px 10px;border-radius:8px;border:1px solid rgba(0,229,255,.28);background:rgba(3,8,24,.92);color:#dffbff;font:11px 'Share Tech Mono',monospace;outline:none;}
+.hla-model-controls select:focus,.hla-model-controls input:focus{border-color:var(--hc);box-shadow:0 0 12px rgba(0,229,255,.14)}
+.hla-model-note{font:9px/1.5 'Share Tech Mono',monospace;color:rgba(190,205,255,.68);}
+.hla-chat{flex:1;min-width:0;display:flex;flex-direction:column;border:1px solid rgba(155,92,255,.3);border-radius:14px;
+  background:rgba(8,6,26,.72);box-shadow:0 0 40px rgba(110,40,255,.12),inset 0 0 40px rgba(0,100,255,.04);overflow:hidden;}
+.hla-log{flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;}
+.hla-msg{max-width:88%;padding:10px 14px;border-radius:12px;border:1px solid;font-size:16px;line-height:1.5;animation:hlaIn .25s ease;overflow-wrap:anywhere;}
+@keyframes hlaIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hla-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;margin-bottom:4px;opacity:.85;}
+.hla-msg.user{align-self:flex-end;border-color:rgba(61,123,255,.6);background:linear-gradient(135deg,rgba(61,123,255,.28),rgba(40,70,200,.14));}
+.hla-msg.user .hla-badge{color:#9fc0ff;text-align:right;}
+.hla-msg.ai{align-self:flex-start;border-color:rgba(155,92,255,.55);background:linear-gradient(135deg,rgba(155,92,255,.2),rgba(80,30,160,.1));}
+.hla-msg.ai .hla-badge{color:#d3b8ff;}
+.hla-msg.sys{align-self:flex-start;border-color:rgba(0,229,255,.45);background:rgba(0,229,255,.07);}
+.hla-msg.sys .hla-badge{color:var(--hc);}
+.hla-msg.act{align-self:flex-start;border-color:rgba(109,255,176,.5);background:rgba(109,255,176,.07);}
+.hla-msg.act .hla-badge{color:var(--hg);}
+.hla-msg.err{align-self:flex-start;border-color:rgba(255,92,122,.6);background:rgba(255,92,122,.09);}
+.hla-msg.err .hla-badge{color:var(--hr);}
+.hla-body code{font-family:'Share Tech Mono',monospace;font-size:13px;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:4px;color:var(--hc);}
+.hla-body b{color:#fff;}
+.hla-li{padding-left:14px;position:relative;}.hla-li::before{content:'▸';position:absolute;left:0;color:var(--hc);}
+.hla-gap{height:6px;}
+.hla-note{margin-top:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(170,190,255,.55);border-top:1px dashed rgba(155,92,255,.3);padding-top:6px;}
+.hla-tbl{width:100%;border-collapse:collapse;font-family:'Share Tech Mono',monospace;font-size:11px;margin-top:6px;}
+.hla-tbl th{text-align:left;color:var(--hc);font-weight:normal;letter-spacing:1px;border-bottom:1px solid rgba(0,229,255,.3);padding:3px 6px;}
+.hla-tbl td{padding:3px 6px;border-bottom:1px solid rgba(155,92,255,.15);color:#cfd9ff;}
+.hla-tblwrap{overflow-x:auto;}
+.hla-diff{font-family:'Share Tech Mono',monospace;font-size:12px;line-height:1.7;margin:6px 0;}
+.hla-diff .add{color:var(--hp);}.hla-diff .rem{color:var(--hr);}.hla-diff .rep{color:#ffd166;}.hla-diff .warn{color:#ffd166;opacity:.85;}
+.hla-prev{display:block;width:100%;max-width:380px;aspect-ratio:9/5;border-radius:8px;border:1px solid rgba(155,92,255,.4);margin:8px 0;background:#050318;}
+.hla-btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.hla-act{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:1px;font-weight:700;padding:10px 14px;border-radius:8px;cursor:pointer;transition:all .2s;}
+.hla-act.go{border:1px solid var(--hg);color:var(--hg);background:rgba(109,255,176,.1);}
+.hla-act.go:hover{background:rgba(109,255,176,.22);box-shadow:0 0 16px rgba(109,255,176,.35);}
+.hla-act.no{border:1px solid var(--hr);color:var(--hr);background:rgba(255,92,122,.08);}
+.hla-act.no:hover{background:rgba(255,92,122,.2);}
+.hla-act[disabled]{opacity:.4;cursor:not-allowed;box-shadow:none;}
+.hla-hints{display:flex;gap:6px;padding:8px 14px 0;overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
+.hla-hints::-webkit-scrollbar{display:none;}
+.hla-hint{flex-shrink:0;font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 11px;border-radius:14px;cursor:pointer;white-space:nowrap;
+  border:1px solid rgba(155,92,255,.4);color:#c9b3ff;background:rgba(155,92,255,.08);transition:all .2s;}
+.hla-hint:hover{border-color:var(--hc);color:var(--hc);}
+.hla-inputbar{display:flex;gap:8px;padding:12px 14px;flex-shrink:0;}
+#hlaInput{flex:1;min-width:0;padding:13px 16px;border-radius:10px;border:1px solid rgba(61,123,255,.5);background:rgba(0,0,0,.45);color:#eaf0ff;
+  font-family:'Share Tech Mono',monospace;font-size:16px;outline:none;transition:all .2s;}
+#hlaInput:focus{border-color:var(--hc);box-shadow:0 0 20px rgba(0,229,255,.2);}
+#hlaSend{padding:0 20px;border-radius:10px;cursor:pointer;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;
+  border:1px solid var(--hv);color:#fff;background:linear-gradient(135deg,rgba(155,92,255,.5),rgba(61,123,255,.5));transition:all .2s;}
+#hlaSend:hover{box-shadow:0 0 22px rgba(155,92,255,.6);}
+#hlaSend.busy{opacity:.55;}
+.hla-foot{position:relative;padding:12px 20px 16px;display:flex;justify-content:center;border-top:1px solid rgba(155,92,255,.25);
+  background:linear-gradient(0deg,rgba(14,8,40,.9),transparent);}
+.hla-lab-btn{width:min(560px,100%);padding:17px 24px;border-radius:12px;cursor:pointer;font-family:'Orbitron',monospace;font-weight:900;font-size:15px;letter-spacing:5px;
+  color:#031018;border:1px solid var(--hc);background:linear-gradient(90deg,var(--hc),var(--hb) 55%,var(--hv));
+  box-shadow:0 0 30px rgba(0,229,255,.45),0 0 60px rgba(155,92,255,.25);transition:all .2s;}
+.hla-lab-btn:hover{transform:translateY(-2px);box-shadow:0 0 42px rgba(0,229,255,.7),0 0 80px rgba(155,92,255,.4);}
+#hlaFab{position:fixed;left:254px;bottom:80px;z-index:22;width:50px;height:50px;border-radius:50%;cursor:pointer;border:1.5px solid #9b5cff;
+  background:radial-gradient(circle at 35% 30%,#fff 0,#a8fbff 9%,#5b86ff 40%,#6a2cff 74%,#12063a 100%);
+  box-shadow:0 0 18px rgba(155,92,255,.8),0 0 36px rgba(0,229,255,.35);animation:hlaFab 2.6s ease-in-out infinite;color:#fff;font-size:0;}
+#hlaFab::after{content:'AI';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:12px;font-weight:900;letter-spacing:1px;color:#fff;text-shadow:0 0 8px #000;}
+@keyframes hlaFab{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+@media(max-width:820px){
+  .hla-top{padding:10px 12px;gap:8px}.hla-logo{font-size:12px;letter-spacing:2px}
+  .hla-chips{order:5;flex:1 1 100%}.hla-chip{font-size:9px;padding:3px 8px}
+  .hla-main{flex-direction:column;padding:10px 10px;gap:8px}
+  .hla-side{width:100%;flex-direction:row;align-items:center;overflow-x:auto;gap:8px;max-height:84px}
+  .hla-orb-wrap{padding:0;flex-shrink:0}.hla-orb{width:56px;height:56px}.hla-core{inset:13px}.hla-orb i:nth-child(3){display:none}
+  .hla-orb-state,.hla-sec,#hlaModelCard{display:none}
+  .hla-quick{flex-direction:row;gap:6px}.hla-qbtn{white-space:nowrap;font-size:13px;padding:8px 10px}
+  .hla-msg{max-width:96%;font-size:15px}.hla-lab-btn{font-size:12px;letter-spacing:3px;padding:14px}
+  #hlaFab{left:12px;bottom:76px}
+}
+
+/* V10 engineering tools — lightweight, no extra renderer */
+.hla-tools{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.hla-toolbtn{padding:9px 7px;border-radius:7px;border:1px solid rgba(0,229,255,.35);background:rgba(0,229,255,.06);color:#b9faff;font-family:'Share Tech Mono',monospace;font-size:10px;cursor:pointer}
+.hla-toolbtn:hover{border-color:#00e5ff;background:rgba(0,229,255,.13)}
+.hla-toolbtn:disabled{opacity:.35;cursor:not-allowed}
+.hla-perf{font-family:'Share Tech Mono',monospace;font-size:10px;line-height:1.7;color:#aebcf0;padding:10px 12px;border:1px solid rgba(109,255,176,.22);border-radius:9px;background:rgba(109,255,176,.035)}
+.hla-perf b{color:#6dffb0;font-weight:normal}
+.hla-v10-label{font-family:'Orbitron',monospace;font-size:8px;letter-spacing:2px;color:#6dffb0;margin:10px 0 5px}
+@media(max-width:820px){.hla-tools{display:flex;flex-wrap:wrap}.hla-toolbtn{white-space:nowrap}.hla-perf{min-width:180px}}
+
+@media(prefers-reduced-motion:reduce){.hla-orb i,.hla-core,#hlaFab,.hla-msg{animation:none!important}}
+
+/* ═════════ HOLOLAB V13 — NEBULA ENGINE GRAPHICS LAYER ═════════
+   CSS-only visual enhancement: no new render loop, no heavy dependencies.
+   Existing controls, scene logic, AI providers and project features remain intact. */
+:root{
+  --c:#65f7ff;--c2:#70ffd2;--c3:#ff9b72;--c4:#ffe68a;--c5:#ff70c8;
+  --bg:#02040d;--bg2:#080d20;--panel:rgba(5,10,27,.88);
+  --glow:0 0 18px rgba(77,230,255,.24);--line:rgba(100,231,255,.22);
+}
+body{
+  background:
+    radial-gradient(ellipse at 50% 44%,rgba(31,64,133,.17),transparent 47%),
+    radial-gradient(ellipse at 14% 82%,rgba(89,34,168,.13),transparent 38%),
+    radial-gradient(ellipse at 87% 12%,rgba(0,174,205,.10),transparent 32%),
+    #02040d;
+  color:#edfaff;
+}
+/* Fine technical grid behind the scene; pointer-safe and inexpensive. */
+body::before{
+  content:"";position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.19;
+  background-image:linear-gradient(rgba(91,210,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(91,210,255,.055) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse at center,#000 5%,transparent 82%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.38) 100%);
+}
+#threeWrap{filter:saturate(1.12) contrast(1.035);}
+#threeWrap canvas{outline:none;}
+#scanlines{opacity:.48;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(80,225,255,.018) 4px,transparent 5px);}
+#scan{opacity:.6;filter:drop-shadow(0 0 5px rgba(71,235,255,.35));}
+/* HUD surfaces: more depth, less opaque visual clutter. */
+#lp,#rp{
+  background:linear-gradient(145deg,rgba(5,13,30,.94),rgba(3,7,19,.84) 62%,rgba(5,10,25,.72));
+  border-color:rgba(89,225,255,.22);
+  box-shadow:0 0 0 1px rgba(109,227,255,.025),0 12px 40px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.035);
+  backdrop-filter:blur(10px);
+}
+#lp{border-right-color:rgba(93,226,255,.22);}
+#rp{border-left-color:rgba(93,226,255,.22);}
+.sec-t,.ds-l{color:rgba(123,229,255,.62);}
+.sec-t{border-bottom-color:rgba(94,223,255,.2);}
+.oi,.sctrl,.hbtn,.hla-toolbtn,.hla-act,.hla-hint{
+  transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease,transform .18s ease;
+}
+.oi{border:1px solid rgba(88,219,255,.1);border-left:2px solid rgba(87,232,255,.62);background:linear-gradient(100deg,rgba(61,196,255,.07),rgba(83,68,178,.035));}
+.oi:hover,.oi.sel{border-color:rgba(91,235,255,.48);background:linear-gradient(100deg,rgba(61,196,255,.15),rgba(100,70,255,.09));box-shadow:inset 0 0 16px rgba(54,202,255,.06),0 0 14px rgba(0,206,255,.07);}
+.hbtn,.sctrl,.hla-toolbtn{
+  border-radius:7px;
+  background-image:linear-gradient(135deg,rgba(255,255,255,.035),transparent 60%);
+}
+.hbtn:hover,.sctrl:hover,.hla-toolbtn:hover{transform:translateY(-1px);}
+.hbtn.on,.sctrl.on{box-shadow:0 0 14px rgba(75,235,255,.18),inset 0 0 12px rgba(75,235,255,.06);}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #72f3ff;outline-offset:2px;}
+/* Assistant overlay / modal: premium glass, still readable. */
+.hla-window,.hla-modal,.hla-panel,.hla-shell,#hlaModal,#hlaOverlay{
+  border-color:rgba(111,117,255,.36);
+  box-shadow:0 24px 80px rgba(0,0,0,.55),0 0 36px rgba(62,190,255,.08),inset 0 1px rgba(255,255,255,.055);
+}
+.hla-top{background:linear-gradient(105deg,rgba(8,14,35,.98),rgba(20,12,51,.94),rgba(4,22,37,.97));border-bottom-color:rgba(105,220,255,.2);}
+.hla-msg{border-color:rgba(97,219,255,.18);box-shadow:0 8px 22px rgba(0,0,0,.15);}
+#hlaInput{background:rgba(2,7,19,.82);border-color:rgba(99,204,255,.38);}
+#hlaInput:focus{box-shadow:0 0 0 3px rgba(66,220,255,.08),0 0 24px rgba(0,229,255,.14);}
+#hlaSend,.hla-lab-btn{background-image:linear-gradient(115deg,rgba(0,229,255,.85),rgba(79,132,255,.88) 48%,rgba(155,92,255,.9));}
+#hlaFab{box-shadow:0 0 14px rgba(155,92,255,.55),0 0 28px rgba(0,229,255,.22);}
+.hla-perf{border-color:rgba(109,255,176,.26);background:linear-gradient(130deg,rgba(109,255,176,.055),rgba(0,229,255,.025));}
+/* Lightweight decorative corner marks on HUD panels. */
+#lp::before,#rp::before{content:"";position:absolute;top:0;width:42px;height:2px;background:linear-gradient(90deg,transparent,var(--c));opacity:.6;pointer-events:none;}
+#lp::before{left:0;}#rp::before{right:0;transform:scaleX(-1);}
+/* Small screens: remove blur/grid intensity to preserve smoothness on 4 GB devices. */
+@media(max-width:820px){
+  body::before{opacity:.09;background-size:36px 36px;}
+  #lp,#rp{backdrop-filter:none;box-shadow:0 8px 22px rgba(0,0,0,.22);}
+  #threeWrap{filter:saturate(1.06);}
+  #scanlines{opacity:.25;}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}
+}
+
+
+/* ═════════ HOLOLAB V14 — MODEL FORGE EDITOR ═════════ */
+#mfModal{position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,2,12,.88);backdrop-filter:blur(18px)}
+#mfModal.open{display:flex}.mf-box{width:min(850px,98vw);max-height:92vh;overflow:auto;border:1px solid rgba(101,247,255,.35);border-radius:16px;background:linear-gradient(145deg,rgba(5,12,31,.98),rgba(15,5,35,.98));box-shadow:0 0 45px rgba(0,229,255,.12);padding:20px;color:#e6f7ff;font-family:var(--mono)}
+.mf-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.mf-title{font:900 15px Orbitron,monospace;letter-spacing:3px;color:#65f7ff}.mf-sub{font-size:10px;color:rgba(210,240,255,.55);line-height:1.6;margin-bottom:14px}
+.mf-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.mf-field{display:flex;flex-direction:column;gap:5px;font-size:10px;color:#9bb7d8}.mf-field input,.mf-field select{width:100%;min-width:0;background:#050b1b;border:1px solid rgba(101,247,255,.25);border-radius:7px;color:#e7fbff;padding:10px;font:12px var(--mono);outline:none}.mf-field input:focus,.mf-field select:focus{border-color:#65f7ff;box-shadow:0 0 10px rgba(101,247,255,.1)}
+.mf-section{font:10px Orbitron,monospace;letter-spacing:2px;color:#70ffd2;margin:17px 0 9px}.mf-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.mf-btn{padding:10px 12px;border-radius:7px;border:1px solid rgba(101,247,255,.4);background:rgba(101,247,255,.07);color:#bffbff;font:10px var(--mono);cursor:pointer}.mf-btn:hover{background:rgba(101,247,255,.15);border-color:#65f7ff}.mf-btn.primary{color:#041018;background:linear-gradient(90deg,#65f7ff,#70ffd2);font-weight:bold}.mf-btn.danger{border-color:rgba(255,92,122,.55);color:#ff91a4}.mf-status{margin-top:12px;font-size:10px;line-height:1.6;color:#70ffd2;white-space:pre-wrap}.mf-file{display:none}
+@media(max-width:620px){.mf-box{padding:14px}.mf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mf-title{font-size:12px;letter-spacing:1.5px}}
 </style>
+
+<style id="hololab-iron-projection-style">
+/* V15 IRON PROJECTION DECK — screen-based hologram HUD; no extra render loop */
+#ironHud{position:fixed;inset:58px 16px 94px;z-index:8;pointer-events:none;display:none;color:#9ffaff;font-family:'Share Tech Mono',monospace;letter-spacing:1.2px;text-shadow:0 0 10px rgba(0,225,255,.22)}
+body.iron-projection #ironHud{display:block}
+body.iron-projection #threeWrap{filter:saturate(1.28) contrast(1.08)}
+body.iron-projection #scanlines{opacity:.68}
+.ih-corner{position:absolute;width:44px;height:44px;border-color:rgba(101,247,255,.72);border-style:solid;filter:drop-shadow(0 0 7px rgba(0,229,255,.28))}
+.ih-tl{top:7px;left:7px;border-width:1px 0 0 1px}.ih-tr{top:7px;right:7px;border-width:1px 1px 0 0}.ih-bl{bottom:7px;left:7px;border-width:0 0 1px 1px}.ih-br{bottom:7px;right:7px;border-width:0 1px 1px 0}
+.ih-readout{position:absolute;top:18px;left:66px;max-width:40%;font-size:10px;line-height:1.9;color:rgba(156,247,255,.8)}
+.ih-readout b{color:#fff;font-weight:normal}.ih-right{position:absolute;right:64px;top:18px;text-align:right;font-size:10px;line-height:1.9;color:rgba(156,247,255,.76)}
+.ih-reticle{position:absolute;left:50%;top:48%;width:clamp(110px,18vw,240px);aspect-ratio:1;transform:translate(-50%,-50%);border:1px solid rgba(93,233,255,.22);border-radius:50%;opacity:.82}
+.ih-reticle:before,.ih-reticle:after{content:"";position:absolute;inset:12%;border:1px dashed rgba(93,233,255,.28);border-radius:50%;animation:ihRotate 24s linear infinite}
+.ih-reticle:after{inset:28%;border-style:solid;border-color:rgba(147,111,255,.3);animation-direction:reverse;animation-duration:18s}
+.ih-cross{position:absolute;left:50%;top:48%;width:clamp(150px,25vw,330px);height:clamp(150px,25vw,330px);transform:translate(-50%,-50%);background:linear-gradient(90deg,transparent 49.8%,rgba(91,229,255,.16) 50%,transparent 50.2%),linear-gradient(0deg,transparent 49.8%,rgba(91,229,255,.16) 50%,transparent 50.2%)}
+.ih-sweep{position:absolute;left:7%;right:7%;top:12%;height:1px;background:linear-gradient(90deg,transparent,rgba(96,244,255,.8),transparent);box-shadow:0 0 12px rgba(0,229,255,.55);animation:ihSweep 7s linear infinite;opacity:.55}
+.ih-bottom{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:7px;flex-wrap:wrap;justify-content:center;pointer-events:auto;max-width:95%}
+.ih-btn{font:10px 'Share Tech Mono',monospace;letter-spacing:1px;color:#aafaff;background:rgba(2,10,26,.78);border:1px solid rgba(88,225,255,.38);border-radius:5px;padding:9px 11px;cursor:pointer;backdrop-filter:blur(5px);box-shadow:inset 0 0 12px rgba(0,225,255,.035)}
+.ih-btn:hover,.ih-btn.active{color:#fff;border-color:#65f7ff;background:rgba(0,180,220,.16);box-shadow:0 0 14px rgba(0,229,255,.16)}
+.ih-label{position:absolute;font-size:9px;color:rgba(147,244,255,.76);border-left:1px solid rgba(101,247,255,.7);padding:4px 7px;background:linear-gradient(90deg,rgba(0,200,255,.08),transparent);max-width:180px}
+.ih-label.one{left:12%;top:37%}.ih-label.two{right:12%;top:58%;border-left:0;border-right:1px solid rgba(101,247,255,.7);text-align:right}
+body.iron-projection .hbtn.iron-toggle{color:#fff;border-color:#65f7ff;box-shadow:0 0 13px rgba(0,229,255,.22)}
+@keyframes ihRotate{to{transform:rotate(360deg)}}@keyframes ihSweep{0%{top:12%;opacity:0}10%{opacity:.65}90%{opacity:.5}100%{top:88%;opacity:0}}
+@media(max-width:820px){#ironHud{inset:58px 7px 82px}.ih-readout{left:48px;font-size:8px}.ih-right{right:48px;font-size:8px}.ih-corner{width:28px;height:28px}.ih-label{display:none}.ih-bottom{bottom:7px;gap:4px}.ih-btn{font-size:9px;padding:8px 8px}.ih-reticle{width:34vw}.ih-cross{width:48vw;height:48vw}}
+@media(prefers-reduced-motion:reduce){.ih-reticle:before,.ih-reticle:after,.ih-sweep{animation:none!important}}
+</style>
+
 </head>
 <body class="th-c">
 
@@ -445,10 +739,26 @@ body.th-fire{--c:#ff6600;--c2:#ffcc00;}
 <div class="crn bl"></div><div class="crn br"></div>
 <div id="depthBar"><div id="depthFill" style="height:60%"></div></div>
 <div id="qualityBadge">ULTRA · v7.0</div>
+<!-- V15 IRON PROJECTION DECK: visual overlay controls operate the existing scene -->
+<div id="ironHud" aria-hidden="true">
+  <div class="ih-corner ih-tl"></div><div class="ih-corner ih-tr"></div><div class="ih-corner ih-bl"></div><div class="ih-corner ih-br"></div>
+  <div class="ih-readout">HOLOLAB / PROJECTION DECK<br>SUBJECT: <b id="ihSubject">AWAITING MODEL</b><br>ASSEMBLY: <b id="ihAssembly">STANDBY</b><br>RENDER: <b id="ihRender">WEBGL</b></div>
+  <div class="ih-right">SYSTEM LINK <b>LOCAL</b><br>OBJECTS <b id="ihObjects">—</b><br>FRAME RATE <b id="ihFPS">—</b><br>MODE <b id="ihMode">HOLOGRAM</b></div>
+  <div class="ih-cross"></div><div class="ih-reticle"></div><div class="ih-sweep"></div>
+  <div class="ih-label one">GEOMETRY ANALYSIS<br>WIRE MESH / SURFACE</div><div class="ih-label two">PROJECTION LOCK<br>3D SCENE ACTIVE</div>
+  <div class="ih-bottom">
+    <button class="ih-btn" onclick="ironBlueprint()">▦ BLUEPRINT</button>
+    <button class="ih-btn" onclick="trigExplode()">⇱ DECONSTRUCT</button>
+    <button class="ih-btn" onclick="trigAssemble()">⇲ ASSEMBLE</button>
+    <button class="ih-btn" onclick="trigEnergyBurst()">ϟ ENERGY PULSE</button>
+    <button class="ih-btn" onclick="ironFocus()">◎ FOCUS MODEL</button>
+    <button class="ih-btn" onclick="toggleIronProjection(false)">✕ EXIT HUD</button>
+  </div>
+</div>
 
 <!-- TOP BAR -->
 <div id="topBar">
-  <div><div class="tb-logo">N O V A &nbsp;/&nbsp; H O L O L A B</div><div class="tb-sub">MERGED HOLOGRAPHIC & MULTI-PAGE BUILDER ENGINE v7.0 · WEBGL · GLSL · AI</div></div>
+  <div><div class="tb-logo">N O V A &nbsp;/&nbsp; H O L O L A B</div><div class="tb-sub">IRON PROJECTION DECK · HOLOGRAPHIC ENGINEERING WORKSTATION v15 · WEBGL · GLSL · AI</div></div>
   <div class="tb-mid">
     <div class="ldot"></div>
     <div class="tb-s"><div class="tb-sv" id="tbSubj">EARTH GLOBE</div><div class="tb-sk">SUBJECT</div></div>
@@ -551,7 +861,13 @@ body.th-fire{--c:#ff6600;--c2:#ffcc00;}
 
 <!-- BOTTOM BAR — MERGED CONTROLS FOR BOTH WORLDS -->
 <div id="btmBar">
+  <button class="hbtn" onclick="openAssistant()" style="border-color:#9b5cff;color:#caa8ff;background:rgba(155,92,255,.08)">🤖 AI ASSISTANT</button>
   <button class="hbtn g" onclick="openInput()">⬡ NEW MODEL</button>
+  <button class="hbtn" onclick="openModelForge()" style="border-color:#65f7ff;color:#65f7ff">▦ MODEL FORGE</button>
+  <button class="hbtn iron-toggle" id="bIronHUD" onclick="toggleIronProjection()" style="border-color:#ff6b35;color:#ffd0b0">⬡ IRON HUD: OFF</button>
+  <button class="hbtn" onclick="openMemory()" style="border-color:#b044ff;color:#d3a0ff">🧠 MEMORY</button>
+  <button class="hbtn" id="bDockRedo" onclick="document.getElementById('hlaRedoBtn')?.click()" style="border-color:#8d78ff;color:#c5baff">↷ REDO</button>
+  <button class="hbtn" onclick="openKey()" style="border-color:#00ff9d;color:#00ff9d">⚙ AI API</button>
   <button class="hbtn" id="bAutoRotate" onclick="tog('autoRotate','↻ ROT')">↻ ROT: ON</button>
   <button class="hbtn y" id="bBloom" onclick="togBloom()">✶ BLOOM: ON</button>
   <button class="hbtn" id="bRefl" onclick="togRefl()">⌥ REFL: ON</button>
@@ -573,10 +889,40 @@ body.th-fire{--c:#ff6600;--c2:#ffcc00;}
   <button class="hbtn" onclick="snap()">📸 SNAP</button>
   <button class="hbtn rec" id="bRec" onclick="togRecord()">⏺ REC</button>
   <button class="hbtn" onclick="resetCam()">⟳ RESET</button>
+  <button class="hbtn" id="bHandTrack" onclick="toggleHandTracking()" style="border-color:#8d78ff;color:#c5baff;background:rgba(125,95,255,.10)">✋ HAND CONTROL: OFF</button>
   <div class="bsp"></div>
-  <div class="btm-info" id="btmDesc">ULTRA HOLOGRAPHIC ENGINE v7.1 · MULTI-LAYER GRID + DETAIL PASS · PRESS N FOR NEW MODEL</div>
+  <div class="btm-info" id="btmDesc">HOLOLAB V15 · IRON PROJECTION DECK · AI MODEL SELECTOR · MEMORY VAULT · PRESS N FOR NEW MODEL</div>
 </div>
 
+<!-- OPTIONAL LOCAL WEBCAM HAND TRACKING -->
+<div id="handControlPanel" aria-label="Hand gesture controls" hidden>
+  <div class="hc-head"><span>✋ HAND TRACKING</span><button type="button" id="hcClose" aria-label="Close hand tracking panel" onclick="toggleHandTracking(false)">×</button></div>
+  <video id="hcVideo" autoplay muted playsinline></video>
+  <div class="hc-status"><span id="hcDot"></span><span id="hcStatus">OFFLINE · CAMERA NOT STARTED</span></div>
+  <div class="hc-gesture">GESTURE <strong id="hcGesture">—</strong></div>
+  <div class="hc-mode-label">ROTATION SENSITIVITY</div>
+  <div class="hc-modes" role="group" aria-label="Rotation sensitivity mode">
+    <button type="button" id="hcSlow" class="hc-mode active" onclick="setHandRotateMode('slow')">SLOW</button>
+    <button type="button" id="hcFast" class="hc-mode" onclick="setHandRotateMode('fast')">FAST</button>
+  </div>
+  <div class="hc-hint" id="hcModeHint">SLOW · Move your hand farther for controlled rotation.</div>
+  <div class="hc-smooth-row"><label for="hcSmooth">SMOOTHING</label><input id="hcSmooth" type="range" min="10" max="90" value="68"><span id="hcSmoothVal">68%</span></div>
+  <div class="hc-hint" id="hcTwoHint">ONE HAND: ROTATE · PINCH: ZOOM · TWO HANDS: SPREAD/CLOSE TO ZOOM · FIST: EXPLODE / ASSEMBLE</div>
+  <button type="button" id="hcStart" onclick="toggleHandTracking(true)">ENABLE CAMERA</button>
+</div>
+<style>
+#handControlPanel{position:fixed;right:22px;bottom:88px;z-index:90;width:220px;padding:12px;border:1px solid rgba(130,110,255,.45);border-radius:14px;background:rgba(5,8,22,.92);box-shadow:0 0 28px rgba(90,70,255,.15);backdrop-filter:blur(16px);color:#d9faff;font:10px/1.5 'Orbitron',monospace}
+#handControlPanel[hidden]{display:none!important}.hc-head{display:flex;justify-content:space-between;align-items:center;color:#b8aaff;letter-spacing:1px;font-weight:800;margin-bottom:8px}.hc-head button{border:0;background:transparent;color:#d9faff;font-size:20px;cursor:pointer}
+#hcVideo{display:block;width:100%;height:124px;object-fit:cover;transform:scaleX(-1);border-radius:8px;background:#030611;border:1px solid rgba(0,225,255,.16)}
+.hc-status{display:flex;align-items:center;gap:7px;margin:9px 0;color:#7cecff;font-size:8px}.hc-status #hcDot{width:7px;height:7px;border-radius:50%;background:#626a7b;box-shadow:0 0 8px currentColor}.hc-status #hcDot.live{background:#39ffb6;color:#39ffb6}
+.hc-gesture{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid rgba(0,225,255,.12);color:#8aa1bb}.hc-gesture strong{color:#e1d5ff}.hc-hint{font:8px/1.6 monospace;color:#8495b3;margin:4px 0 9px}
+.hc-mode-label{font:8px 'Orbitron',monospace;letter-spacing:1px;color:#8ea4c9;margin:10px 0 6px}
+.hc-modes{display:flex;gap:6px}.hc-mode{flex:1;padding:8px 6px;border:1px solid rgba(130,110,255,.38);border-radius:7px;background:rgba(20,25,48,.8);color:#aab9d8;font:800 9px 'Orbitron',monospace;cursor:pointer}
+.hc-mode.active{border-color:#39eaff;background:rgba(25,190,255,.16);color:#9af4ff;box-shadow:0 0 12px rgba(40,220,255,.12)}
+ .hc-smooth-row{display:flex;align-items:center;gap:6px;margin:8px 0;color:#8ea4c9;font:8px 'Orbitron',monospace}.hc-smooth-row input{width:78px;min-width:0;accent-color:#39eaff}.hc-smooth-row span{color:#aaf5ff;min-width:28px;text-align:right}
+#hcStart{width:100%;padding:9px;border:1px solid #8d78ff;border-radius:8px;background:rgba(125,95,255,.13);color:#ded6ff;font:800 9px 'Orbitron',monospace;cursor:pointer}#hcStart:hover{background:rgba(125,95,255,.25)}
+@media(max-width:700px){#btmBar{min-height:62px;padding:8px;gap:6px}#btmBar .hbtn{font-size:7px;padding:9px 10px}#btmBar .btm-info{display:none}#handControlPanel{right:10px;bottom:76px;width:190px}#hcVideo{height:100px}}
+</style>
 <!-- VOICE -->
 <button id="voiceBtn" title="Voice Input">🎤</button>
 <div id="voiceInd">◈ NOVA SPEAKING</div>
@@ -624,11 +970,32 @@ body.th-fire{--c:#ff6600;--c2:#ffcc00;}
         <circle cx="7" cy="36" r="2.5" fill="rgba(0,255,157,.6)"/>
       </svg>
     </div>
-    <div class="io-title">NOVA v7.1 DETAIL ENGINE</div>
-    <div class="io-sub">ULTRA 3D HOLOGRAPHIC ENGINE · GLSL FRESNEL · MULTI-PAGE BUILDER · XR</div>
+    <div class="io-title">HOLOLAB V15 · IRON PROJECTION DECK</div>
+    <div class="io-sub">NEBULA 3D RENDERING · ADAPTIVE BLOOM · GLSL FRESNEL · XR</div>
     <input type="text" class="io-inp" id="subjInp" placeholder="Human Skeleton, Solar System, DNA, Spaceship, Robot, City..." autocomplete="off"/>
     <input type="text" class="io-multi" id="subjInp2" placeholder="+ Add 2nd subject for dual hologram / comparison (optional)"/>
-    <div class="io-hint">GROQ AI · CUSTOM GLSL SHADERS · VOLUMETRIC BLOOM · FRESNEL EFFECT · ENERGY WAVES</div>
+    <div class="ai-choice-row" style="flex-wrap:wrap">
+      <select id="aiProvider" aria-label="AI provider" onchange="providerChanged()">
+        <option value="gemini">🧠 GEMINI API</option>
+        <option value="groq">⚡ GROQ API</option>
+        <option value="demo">◇ OFFLINE DEMO</option>
+      </select>
+      <select id="aiModel" aria-label="Choose AI model" onchange="saveAIChoice()">
+        <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+        <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
+        <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+      </select>
+      <input id="customModelId" aria-label="Custom model ID (optional)" placeholder="Custom model ID (optional)" autocomplete="off" oninput="saveAIChoice()" style="flex:1;min-width:180px;padding:10px;background:#020914;color:var(--c);border:1px solid rgba(0,255,255,.25);border-radius:7px;font-family:var(--mono);font-size:10px"/>
+      <select id="qualityMode" aria-label="Render quality" onchange="applyQuality(this.value)">
+        <option value="adaptive">◈ QUALITY: AUTO ADAPTIVE</option>
+        <option value="ultra">◈ QUALITY: ULTRA</option>
+        <option value="balanced">◈ QUALITY: BALANCED</option>
+        <option value="performance">◈ QUALITY: PERFORMANCE</option>
+      </select>
+      <div id="nebulaStatus" style="flex-basis:100%;font-family:var(--mono);font-size:10px;letter-spacing:1px;color:#9dfcff;border:1px solid rgba(0,255,255,.22);background:linear-gradient(90deg,rgba(0,255,255,.08),rgba(145,70,255,.08));padding:8px 10px;border-radius:7px">NEBULA: AUTO ADAPTIVE</div>
+      <label style="flex-basis:100%;font-family:var(--mono);font-size:10px;color:var(--c);display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiFallback" onchange="setFallback(this.checked)"> USE OTHER PROVIDER AS BACKUP IF THE SELECTED ONE FAILS</label>
+    </div>
+    <div class="io-hint">GEMINI / GEMINI + GROQ AI · CUSTOM GLSL SHADERS · VOLUMETRIC BLOOM · FRESNEL EFFECT</div>
     <div class="io-ex">
       <span class="io-tag" onclick="se('Human Skeleton')">Human Skeleton</span>
       <span class="io-tag" onclick="se('Solar System')">Solar System</span>
@@ -648,18 +1015,91 @@ body.th-fire{--c:#ff6600;--c2:#ffcc00;}
       <button class="io-voice" onclick="startVoiceSubject()">🎤</button>
       <button class="io-kb" onclick="openKey()">🔑</button>
     </div>
+    <button type="button" class="io-kb" style="width:100%;margin-top:10px;border-color:rgba(155,92,255,.5);color:#caa8ff" onclick="openAssistant()">🤖 OPEN AI ASSISTANT</button>
   </div>
 </div>
 
-<!-- KEY MODAL -->
+<!-- API SETTINGS MODAL -->
 <div id="keyModal">
-  <div class="km-box">
-    <div class="km-t">GROQ API KEY</div>
-    <div class="km-s">AUTHENTICATE NOVA AI ULTRA ENGINE</div>
-    <input type="password" class="km-i" id="keyInp" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxx"/>
-    <div class="km-h">KEY STORED LOCALLY · ENCRYPTED · SENT ONLY TO API.GROQ.COM</div>
-    <button class="km-btn" onclick="saveKey()">✓ ACTIVATE NOVA</button>
+  <div class="km-box" style="max-width:520px">
+    <div class="km-t">AI API SETTINGS</div>
+    <div class="km-s">GEMINI + GROQ PROVIDER KEYS</div>
+    <label for="geminiKeyInp" class="km-h" style="display:block;text-align:left">GOOGLE GEMINI API KEY</label>
+    <input type="password" class="km-i" id="geminiKeyInp" placeholder="Paste Gemini API key" autocomplete="off"/>
+    <label for="keyInp" class="km-h" style="display:block;text-align:left">GROQ API KEY</label>
+    <input type="password" class="km-i" id="keyInp" placeholder="gsk_..." autocomplete="off"/>
+    <div class="km-h">Keys are stored in this browser's local storage, not encrypted. Do not use private keys on a public/shared device or publish them in HTML.</div>
+    <button class="km-btn" onclick="saveKey()">✓ SAVE API SETTINGS</button>
+    <button class="km-btn" style="margin-top:8px;border-color:rgba(0,255,255,.3);color:var(--c)" onclick="closeKey()">CLOSE</button>
   </div>
+</div>
+
+<!-- SEPARATE MEMORY VAULT -->
+<div id="memoryModal" role="dialog" aria-modal="true" aria-label="HOLOLAB Memory Vault">
+  <div class="mem-box">
+    <div class="mem-head"><div><div class="mem-title">🧠 MEMORY VAULT</div><div class="mem-note">Saved prompts, model snapshots, and your own notes. Stored in this browser only.</div></div><button class="mem-close" onclick="closeMemory()">✕ CLOSE</button></div>
+    <div class="mem-row"><input id="memoryTitle" class="mem-input" placeholder="Memory title (e.g. spaceship design notes)" maxlength="100"/></div>
+    <textarea id="memoryText" class="mem-textarea" placeholder="Write a note, instruction, or project idea to remember..."></textarea>
+    <div class="mem-row" style="margin-top:8px"><button class="mem-action" onclick="saveManualMemory()">＋ SAVE NOTE</button><button class="mem-action" onclick="saveCurrentHoloMemory()">⬡ SAVE CURRENT MODEL</button><button class="mem-action" onclick="exportMemories()">⇩ EXPORT JSON</button></div>
+    <div class="mem-note">Model generations are also saved here automatically. Browser data can be cleared by browser settings, so export backups occasionally.</div>
+    <div id="memoryList" class="mem-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════ HOLOLAB AI ASSISTANT PAGE (V9) ═══════════ -->
+<button id="hlaFab" type="button" title="Open HOLOLAB AI Assistant" aria-label="Open HOLOLAB AI Assistant" onclick="openAssistant()">AI</button>
+<div id="hlaPage" role="dialog" aria-modal="true" aria-label="HOLOLAB AI Assistant">
+  <header class="hla-top">
+    <div><div class="hla-logo">HOLOLAB <b>AI ASSISTANT</b></div><div class="hla-tag">AI ENGINEERING WORKSTATION · V15</div></div>
+    <div class="hla-chips" id="hlaChips"></div>
+    <button type="button" class="hla-tbtn" id="hlaApiBtn">⚙ AI API</button>
+    <button type="button" class="hla-tbtn" id="hlaClearBtn">🗑 CLEAR CHAT</button>
+    <button type="button" class="hla-tbtn" id="hlaCloseBtn" aria-label="Close assistant">✕</button>
+  </header>
+  <main class="hla-main">
+    <aside class="hla-side">
+      <div class="hla-orb-wrap">
+        <div class="hla-orb" id="hlaOrb"><i></i><i></i><i></i><span class="hla-core"></span></div>
+        <div class="hla-orb-state" id="hlaOrbState">ONLINE · IDLE</div>
+      </div>
+      <div class="hla-sec">QUICK ACTIONS</div>
+      <div class="hla-quick">
+        <button type="button" class="hla-qbtn" data-q="Explain current hologram">🔍 Explain Current Hologram</button>
+        <button type="button" class="hla-qbtn" data-q="Show details">📋 Show Details</button>
+        <button type="button" class="hla-qbtn" data-q="Short summary">⚡ Short Summary</button>
+        <button type="button" class="hla-qbtn" data-q="System status">🛰 System Status</button>
+      </div>
+      <div class="hla-sec">LIVE MODEL</div>
+      <div class="hla-card" id="hlaModelCard"></div>
+      <div class="hla-sec">AI MODEL SELECTOR</div>
+      <div class="hla-model-controls">
+        <select id="hlaProviderSelect" aria-label="AI provider for assistant" onchange="assistantProviderChanged()">
+          <option value="gemini">🧠 GEMINI</option><option value="groq">⚡ GROQ</option><option value="demo">◇ OFFLINE DEMO</option>
+        </select>
+        <select id="hlaModelSelect" aria-label="AI model for assistant" onchange="assistantModelChanged()"></select>
+        <input id="hlaCustomModel" aria-label="Custom AI model ID" placeholder="Custom model ID (optional)" autocomplete="off" oninput="assistantCustomModelChanged()" />
+        <div class="hla-model-note" id="hlaModelNote">Choose the model used by AI chat and scene-edit requests.</div>
+      </div>
+      <div class="hla-v10-label">ENGINEERING TOOLS · V14</div>
+      <div class="hla-tools">
+        <button type="button" class="hla-toolbtn" id="hlaInspectBtn">⌕ INSPECT MODEL</button>
+        <button type="button" class="hla-toolbtn" id="hlaUndoBtn" disabled>↶ UNDO EDIT</button>
+        <button type="button" class="hla-toolbtn" id="hlaRedoBtn" disabled>↷ REDO EDIT</button>
+        <button type="button" class="hla-toolbtn" id="hlaPerfBtn">◈ REFRESH STATUS</button>
+      </div>
+      <div class="hla-v10-label">PERFORMANCE GUARDIAN</div>
+      <div class="hla-perf" id="hlaPerfCard">Reading live application metrics…</div>
+    </aside>
+    <section class="hla-chat">
+      <div class="hla-log" id="hlaLog" role="log" aria-live="polite"></div>
+      <div class="hla-hints" id="hlaHints"></div>
+      <form class="hla-inputbar" id="hlaForm" autocomplete="off">
+        <input id="hlaInput" type="text" maxlength="500" placeholder="Ask or command… e.g. “Is hologram ko explain karo”" aria-label="Message to HOLOLAB assistant" autocomplete="off" enterkeyhint="send">
+        <button type="submit" id="hlaSend">SEND ➤</button>
+      </form>
+    </section>
+  </main>
+  <footer class="hla-foot"><button type="button" class="hla-lab-btn" id="hlaOpenLab">⚡ OPEN HOLOGRAM LAB</button></footer>
 </div>
 
 <script>
@@ -672,11 +1112,12 @@ body.th-fire{--c:#ff6600;--c2:#ffcc00;}
 // ╚══════════════════════════════════════════════════════════════════╝
 
 // ── THREE SETUP ───────────────────────────────────────────
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const LOW_POWER_MODE = (navigator.deviceMemory && navigator.deviceMemory <= 4) || /Android|iPhone|iPad/i.test(navigator.userAgent);
+const renderer = new THREE.WebGLRenderer({ antialias: !LOW_POWER_MODE, alpha: false, preserveDrawingBuffer: false, powerPreference: 'high-performance' });
+// Keep GPU workload reasonable on 4 GB laptops; high-DPI rendering is expensive.
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, LOW_POWER_MODE ? 1 : 1.25));
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled = false; // Expensive real-time shadows disabled for smoother performance.
 renderer.toneMapping = THREE.ReinhardToneMapping;
 renderer.toneMappingExposure = 1.3;
 document.getElementById('threeWrap').appendChild(renderer.domElement);
@@ -693,6 +1134,7 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   if (composer) composer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(_pixelCap());
   energyCvs.width = window.innerWidth;
   energyCvs.height = window.innerHeight;
 });
@@ -744,8 +1186,8 @@ function initBloom() {
   try {
     const rp = new THREE.RenderPass(scene, camera);
     bloomPass = new THREE.UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      1.8, 0.5, 0.08
+      new THREE.Vector2(Math.max(320, Math.floor(window.innerWidth * 0.75)), Math.max(240, Math.floor(window.innerHeight * 0.75))),
+      1.45, 0.5, 0.08
     );
     composer = new THREE.EffectComposer(renderer);
     composer.addPass(rp);
@@ -1128,8 +1570,20 @@ function addTechnicalDetail(group, verts, edges, color) {
 }
 
 // ── BUILD HOLOGRAM ────────────────────────────────────────
-function buildHolo(objects, labels) {
-  if(S.holoGroup){scene.remove(S.holoGroup);S.holoGroup.traverse(c=>{if(c.geometry)c.geometry.dispose();if(c.material){const mats=Array.isArray(c.material)?c.material:[c.material];mats.forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});}
+function disposeGroup(g){if(!g)return;scene.remove(g);g.traverse(c=>{if(c.geometry)c.geometry.dispose();if(c.material){(Array.isArray(c.material)?c.material:[c.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});}
+function frameModel(g){
+  const box=new THREE.Box3().setFromObject(g);if(box.isEmpty())return;
+  const c=box.getCenter(new THREE.Vector3()),r=box.getBoundingSphere(new THREE.Sphere()).radius;
+  if(![c.x,c.y,c.z,r].every(Number.isFinite)||r<=0)return;
+  g.position.sub(c);                                   // centre on the camera target
+  S.camRadius=Math.min(30,Math.max(6,r*2.6));          // fit bounding sphere in view
+}
+function buildHolo(objects,labels){
+  const prev=S.holoGroup,keep=[S.shaderMats,S.wireMats,S.explodeDirs];
+  try{_buildHoloImpl(objects,labels,prev);}
+  catch(err){S.holoGroup=prev;[S.shaderMats,S.wireMats,S.explodeDirs]=keep;throw err;}   // keep last valid scene
+}
+function _buildHoloImpl(objects, labels, prev) {
   S.holoGroup = new THREE.Group();
   S.shaderMats = [];
   S.wireMats = [];
@@ -1254,13 +1708,12 @@ function buildHolo(objects, labels) {
     c.width=320; c.height=52;
     const cx=c.getContext('2d');
     cx.fillStyle='rgba(0,255,255,0.06)';
-    cx.roundRect(0,0,320,52,8);
-    cx.fill();
+    cx.fillRect(0,0,320,52);
     cx.shadowColor=S.colorHex;
     cx.shadowBlur=10;
     cx.fillStyle=S.colorHex+'ee';
     cx.font='bold 16px Orbitron,monospace';
-    cx.fillText(lbl.text.toUpperCase(),8,32);
+    cx.fillText(String(lbl.text||'').toUpperCase(),8,32);
     cx.strokeStyle=S.colorHex+'55';
     cx.lineWidth=1;
     cx.beginPath();cx.moveTo(0,48);cx.lineTo(320,48);cx.stroke();
@@ -1271,12 +1724,14 @@ function buildHolo(objects, labels) {
     S.holoGroup.add(sp);
   });
 
+  frameModel(S.holoGroup);
   scene.add(S.holoGroup);
+  if(prev&&prev!==S.holoGroup)disposeGroup(prev);
   document.getElementById('tbVerts').textContent=tv;
   document.getElementById('tbObjs').textContent=objects.length;
   document.getElementById('lpObjs').textContent=objects.length;
   document.getElementById('lpTris').textContent=Math.round(tv*1.8);
-  buildReflection();
+  try{buildReflection();}catch(e){addDS('[WARN] reflection skipped');}
   trigAssemble();
   setTimeout(()=>spawnEnergyWave(window.innerWidth/2,window.innerHeight/2,S.colorHex,800,6),200);
 }
@@ -1457,7 +1912,7 @@ function updateTour(){
 }
 
 function updateCam(){
-  if(!S.tourActive&&S.autoRotate)S.camTheta+=.004;
+  if(!S.tourActive&&S.autoRotate)S.camTheta+=.00024*_dtMs;
   updateTour();
   const x=S.camRadius*Math.sin(S.camTheta)*Math.cos(S.camPhi);
   const y=S.camRadius*Math.sin(S.camPhi);
@@ -1663,98 +2118,263 @@ function startVoiceSubject(){
   voiceRec.onend=()=>document.getElementById('voiceBtn').classList.remove('listening');
 }
 
-// ── GROQ API & MULTI-PAGE MODEL BUILDER ────────────────────
+// ── MULTI-PROVIDER AI + DETAILED HOLOGRAM BUILDER ──────────
 const GROQ_MODEL_PRIMARY   = 'openai/gpt-oss-120b';
 const GROQ_MODEL_SECONDARY = 'openai/gpt-oss-20b';
+const DEFAULT_GEMINI_MODEL = 'gemini-3.8-flash';
+// Priority chain (checked against Google/Groq model docs, Oct 2026). Gemini is tried first, model by model; Groq is the backup.
+const GEMINI_CHAIN=['gemini-3.8-flash','gemini-4-argon','gemini-3.6-flash','gemini-3.1-pro-preview','gemini-3-flash-preview','gemini-3.5-flash-lite','gemini-3.1-flash-lite','gemini-2.5-flash'];
+const GROQ_CHAIN=['openai/gpt-oss-120b','qwen/qwen3.8-27b','minimaxai/minimax-m2.7','meta-models/muse-spark-open','openai/gpt-oss-20b'];
+let _aiTimeoutMs=75000;
+const DEAD_MODELS=['gemini-2.0-flash','gemini-2.0-flash-lite','gemini-3-pro-preview','gemini-3.1-flash-lite-preview','llama-3.3-70b-versatile','llama-3.1-8b-instant','qwen/qwen3.6-27b'];  // retired per provider docs
 
-const SYSTEM_PROMPT = `You are NOVA-3D, the world's most advanced holographic geometry AI, engineered with professional 3D modeling and WebGL/Three.js pipeline expertise.
-Generate the most geometrically dense, spatially accurate, visually stunning 3D wireframe hologram JSON structure:
-{
-  "subject": "string",
-  "description": "3 sentences: technical structure desc + visual appearance + scientific significance",
-  "color": "#00FFFF",
-  "objects": [
-    {
-      "name": "component_name",
-      "vertices": [[x,y,z], ...],
-      "edges": [[i,j], ...],
-      "position": [px, py, pz],
-      "scale": [sx, sy, sz],
-      "glow": 0.0-1.0
-    }
-  ],
-  "labels": [{"text": "UPPERCASE LABEL", "position": [x,y,z]}]
-}
-For each object, encode actual recognizable geometry, not just abstract outlines: use silhouette loops, cross-sections, internal supports, joints, panel seams, repeated vents/windows/ribs, and small connected subcomponents wherever relevant. Use 12-18 meaningful objects when the subject needs them; aim for 35-90 vertices and 45-140 edges per major component, but keep the complete response compact enough to parse. Use smooth curves as connected polyline segments, close loops where appropriate, maintain symmetry and correct relative scale, and give every object a clear component-specific name. Do not add random decorative geometry unrelated to the subject. Ensure vertex coordinates are strictly within [-2.2, 2.2] per axis. Output ONLY raw JSON.`;
+const SYSTEM_PROMPT = `You are NOVA-3D, a professional procedural 3D hologram geometry assistant for Three.js. Return a valid JSON object only, with this schema: {"subject":"string","description":"3 concise sentences","color":"#00FFFF","objects":[{"name":"component_name","vertices":[[x,y,z]],"edges":[[i,j]],"position":[px,py,pz],"scale":[sx,sy,sz],"glow":0.0}],"labels":[{"text":"UPPERCASE LABEL","position":[x,y,z]}]}. Create recognizable, subject-specific geometry with meaningful silhouettes, cross-sections, internal supports, repeated panels/windows/ribs, joints, and connected subcomponents. Prefer 6-10 named components (use 4-7 for simple subjects), coherent proportions, symmetry and connected topology. Do not add unrelated random geometry. Keep vertex coordinates within [-2.2,2.2] per axis, use at most 150 vertices and 220 edges per component, ensure edge indices are valid, and keep the JSON compact. Output ONLY raw JSON.`;
 
 function buildPrompt(subject) {
   return `SUBJECT TO RENDER: "${subject}"
-TASK: Generate an exceptionally detailed, recognizable 3D wireframe hologram JSON with 12-18 named components where appropriate. Include the main silhouette, secondary structures, internal geometry, repeated component patterns, mechanical joints/panels or scientifically relevant substructures. Prefer meaningful topology over random points; use closed loops and connected edges for clear surfaces and accurate proportions. Stay within the coordinate limits and avoid huge JSON.
-OUTPUT: Return ONLY the JSON object starting with { and ending with }.`;
+Generate a recognizable, balanced-detail 3D wireframe hologram JSON. Include the main silhouette and a few subject-specific secondary structures. Use connected edges and meaningful component names. Use 6-10 components, at most 150 vertices and 220 edges per component. Coordinates must remain within [-2.2,2.2]. Return ONLY one compact JSON object.`;
 }
-
-async function callGroq(subj) {
-  const key = getKey();
-  if(!key){openKey();throw new Error('No key');}
-  const systemMsg = { role:'system', content: SYSTEM_PROMPT };
-  const userMsg   = { role:'user',   content: buildPrompt(subj) };
-  let lastErr = null;
-  for(const model of [GROQ_MODEL_PRIMARY, GROQ_MODEL_SECONDARY]) {
-    try {
-      addDS(`[AI] Trying ${model.split('/')[1].toUpperCase()}...`);
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-        body:JSON.stringify({model, max_tokens:8000, temperature:0.05, messages:[systemMsg, userMsg]})
-      });
-      if(!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      let txt = (data.choices?.[0]?.message?.content||'').trim();
-      txt = txt.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
-      const s = txt.indexOf('{'), e = txt.lastIndexOf('}');
-      const parsed = JSON.parse(txt.slice(s, e+1));
-      return parsed;
-    } catch(err) { lastErr = err; }
+function parseModelJSON(txt){
+  txt=String(txt||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
+  const a=txt.indexOf('{'),b=txt.lastIndexOf('}');
+  if(a<0||b<a)throw new Error('AI returned no JSON object');
+  const data=JSON.parse(txt.slice(a,b+1));
+  if(!Array.isArray(data.objects))throw new Error('AI JSON missing objects array');
+  data.objects=data.objects.slice(0,40);
+  data.labels=Array.isArray(data.labels)?data.labels.slice(0,60):[];
+  return data;
+}
+function sanitizeModel(data){
+  const rep={droppedV:0,droppedE:0},MAXV=600,MAXE=1200;
+  const num3=a=>Array.isArray(a)&&a.length>=3&&[0,1,2].every(i=>a[i]!==null&&a[i]!==''&&Number.isFinite(Number(a[i]))&&Math.abs(Number(a[i]))<1e3);
+  const objs=[];
+  for(const o of (data&&data.objects)||[]){
+    if(!o||!Array.isArray(o.vertices)||!Array.isArray(o.edges))continue;
+    const raw=o.vertices.slice(0,MAXV),ok=raw.map(num3);
+    // keep original indices (invalid vertices become inert placeholders) so edges never shift to wrong vertices
+    const vertices=raw.map((v,i)=>ok[i]?[Number(v[0]),Number(v[1]),Number(v[2])]:[0,0,0]);
+    rep.droppedV+=ok.filter(x=>!x).length;
+    const edges=[];
+    for(const e of o.edges.slice(0,MAXE)){
+      const a=Array.isArray(e)?Number(e[0]):NaN,b=Array.isArray(e)?Number(e[1]):NaN;
+      if(!Number.isInteger(a)||!Number.isInteger(b)||a<0||b<0||a>=raw.length||b>=raw.length||a===b||!ok[a]||!ok[b]){rep.droppedE++;continue;}
+      edges.push([a,b]);
+    }
+    if(vertices.length<2||!edges.length)continue;
+    const sc=num3(o.scale)?o.scale.slice(0,3).map(Number):[1,1,1];
+    objs.push({...o,name:String(o.name||'component'),vertices,edges,position:num3(o.position)?o.position.slice(0,3).map(Number):[0,0,0],scale:sc.map(s=>s||1)});
   }
-  throw lastErr || new Error('All models failed');
+  const labels=(Array.isArray(data&&data.labels)?data.labels:[]).filter(l=>l&&typeof l.text==='string'&&l.text.trim()).slice(0,60)
+    .map(l=>({text:l.text.slice(0,40),position:num3(l.position)?l.position.slice(0,3).map(Number):[0,1.5,0]}));
+  return {...data,objects:objs,labels,_report:rep};
 }
+function getProvider(){return document.getElementById('aiProvider')?.value||localStorage.getItem('hololab_provider')||'gemini';}
+function getSelectedModel(){const custom=document.getElementById('customModelId')?.value.trim();return custom||document.getElementById('aiModel')?.value||localStorage.getItem('hololab_model')||DEFAULT_GEMINI_MODEL;}
+function getKey(){return localStorage.getItem('nova_groq')||'';}
+function getGeminiKey(){return localStorage.getItem('nova_gemini')||'';}
+function getActiveKey(){return getProvider()==='gemini'?getGeminiKey():getKey();}
+const AI_MODEL_OPTIONS={
+  gemini:[['gemini-3.8-flash','1 · Gemini 3.8 Flash · best all-round (default)'],['gemini-4-argon','2 · Gemini 4 Argon · flagship reasoning'],['gemini-3.6-flash','3 · Gemini 3.6 Flash · balanced'],['gemini-3.1-pro-preview','4 · Gemini 3.1 Pro · preview'],['gemini-3-flash-preview','5 · Gemini 3 Flash · preview'],['gemini-3.5-flash-lite','6 · Gemini 3.5 Flash-Lite · fastest'],['gemini-3.1-flash-lite','7 · Gemini 3.1 Flash-Lite · cheap'],['gemini-2.5-flash','8 · Gemini 2.5 Flash · legacy backup']],
+  groq:[['openai/gpt-oss-120b','1 · GPT-OSS 120B · strongest stable'],['qwen/qwen3.8-27b','2 · Qwen 3.8 27B · preview'],['minimaxai/minimax-m2.7','3 · MiniMax M2.7 · preview'],['meta-models/muse-spark-open','4 · Muse Spark Open · preview'],['openai/gpt-oss-20b','5 · GPT-OSS 20B · fast stable']],
+  demo:[['offline-demo','Offline demo · no API']]
+};
+function providerChanged(){
+  const provider=document.getElementById('aiProvider').value,model=document.getElementById('aiModel'),custom=document.getElementById('customModelId');
+  const saved=(m=>DEAD_MODELS.includes(m)?'':m)(localStorage.getItem('hololab_model')||'');const opts=AI_MODEL_OPTIONS[provider]||AI_MODEL_OPTIONS.gemini;
+  model.innerHTML=opts.map(([id,label])=>`<option value="${id}">${label}</option>`).join('');
+  const compatible=opts.some(([id])=>id===saved);
+  model.value=compatible?saved:(provider==='groq'?GROQ_MODEL_PRIMARY:provider==='demo'?'offline-demo':DEFAULT_GEMINI_MODEL);
+  if(custom)custom.value=(saved&&!compatible&&provider!=='demo')?saved:'';
+  saveAIChoice();
+  const hint=document.querySelector('.io-hint');if(hint)hint.textContent=provider==='demo'?'OFFLINE DEMO MODE · NO API KEY REQUIRED':provider.toUpperCase()+' AI · MODEL: '+getSelectedModel()+' · MODEL ACCESS DEPENDS ON YOUR API ACCOUNT';
+  if(typeof syncAssistantModelUI==='function')syncAssistantModelUI();
+}
+function saveAIChoice(){const p=document.getElementById('aiProvider'),m=document.getElementById('aiModel'),c=document.getElementById('customModelId');if(!p||!m)return;localStorage.setItem('hololab_provider',p.value);localStorage.setItem('hololab_model',(c&&c.value.trim())||m.value);}
+function syncAssistantModelUI(){
+  const p=document.getElementById('hlaProviderSelect'),m=document.getElementById('hlaModelSelect'),c=document.getElementById('hlaCustomModel'),note=document.getElementById('hlaModelNote');
+  const mainP=document.getElementById('aiProvider'),mainM=document.getElementById('aiModel'),mainC=document.getElementById('customModelId');
+  if(!p||!m||!mainP||!mainM)return;
+  p.value=mainP.value;const opts=AI_MODEL_OPTIONS[p.value]||AI_MODEL_OPTIONS.gemini;
+  m.innerHTML=opts.map(([id,label])=>`<option value="${id}">${label}</option>`).join('');
+  const selected=mainM.value;m.value=opts.some(([id])=>id===selected)?selected:opts[0][0];
+  if(c)c.value=mainC?.value||'';
+  if(note)note.textContent=p.value==='demo'?'Offline demo needs no API key; advanced AI replies require a provider key.':'Active for assistant chat and AI scene edits · access depends on your API account.';
+}
+function assistantProviderChanged(){
+  const p=document.getElementById('hlaProviderSelect'),main=document.getElementById('aiProvider');if(!p||!main)return;
+  main.value=p.value;providerChanged();syncAssistantModelUI();
+}
+function assistantModelChanged(){
+  const m=document.getElementById('hlaModelSelect'),main=document.getElementById('aiModel'),c=document.getElementById('hlaCustomModel'),mainC=document.getElementById('customModelId');
+  if(!m||!main)return;main.value=m.value;if(mainC)mainC.value='';if(c)c.value='';saveAIChoice();syncAssistantModelUI();
+}
+function assistantCustomModelChanged(){
+  const c=document.getElementById('hlaCustomModel'),mainC=document.getElementById('customModelId');if(!c||!mainC)return;
+  mainC.value=c.value;saveAIChoice();const note=document.getElementById('hlaModelNote');if(note)note.textContent=c.value.trim()?'Custom model ID selected. It must be valid for the chosen provider.':'Using the selected model from the dropdown.';
+}
+let _genId=0,_genCtl=null,_genBusy=false,_genSubj='';
+function getMaxTokens(){const n=parseInt(localStorage.getItem('hololab_max_tokens')||'',10);return Number.isFinite(n)&&n>=2000&&n<=32000?n:10000;}
+function getFallbackOn(){return localStorage.getItem('hololab_fallback')!=='0';}   // backup ON by default; user can still switch it off
+function setFallback(on){localStorage.setItem('hololab_fallback',on?'1':'0');}
+function redact(s){return String(s||'').replace(/AIza[\w-]{20,}|gsk_[\w-]{10,}|Bearer\s+\S+/g,'[key]');}
+async function fetchJSONWithTimeout(url,options,timeoutMs=75000,outerSignal){
+  const ctl=new AbortController();let timedOut=false;
+  const timer=setTimeout(()=>{timedOut=true;ctl.abort();},timeoutMs);
+  const onAbort=()=>ctl.abort();
+  if(outerSignal){if(outerSignal.aborted)ctl.abort();else outerSignal.addEventListener('abort',onAbort,{once:true});}
+  try{
+    const res=await fetch(url,{...options,signal:ctl.signal});
+    const raw=await res.text();let data={};
+    try{data=raw?JSON.parse(raw):{};}catch{throw new Error('Provider returned non-JSON (HTTP '+res.status+')');}
+    if(!res.ok){
+      const msg=redact(data.error?.message||data.message||'').slice(0,140);
+      if(res.status===401||res.status===403)throw new Error('Authentication failed (HTTP '+res.status+') — check the key in API SETTINGS. '+msg);
+      if(res.status===429)throw new Error('Rate limit or quota reached (HTTP 429). Wait a moment or switch provider. '+msg);
+      if(res.status===404)throw new Error('Model not found (HTTP 404) — choose another model. '+msg);
+      throw new Error('AI HTTP '+res.status+(msg?': '+msg:''));
+    }
+    return data;
+  }catch(err){
+    if(err&&err.name==='AbortError'){if(timedOut)throw new Error('API timed out after '+Math.round(timeoutMs/1000)+' s.');const e=new Error('Cancelled');e.cancelled=true;throw e;}
+    if(err instanceof TypeError)throw new Error('Network error — check your connection or blockers for the API domain.');
+    throw err;
+  }finally{clearTimeout(timer);if(outerSignal)outerSignal.removeEventListener('abort',onAbort);}
+}
+async function callGroq(subj,modelOverride,signal){
+  const key=getKey();if(!key)throw new Error('Groq API key missing');
+  const selected=modelOverride||(!getSelectedModel().startsWith('gemini-')&&getSelectedModel()!=='offline-demo'?getSelectedModel():GROQ_MODEL_SECONDARY);
+  addDS(`[AI] GROQ · ${selected.toUpperCase()} · REQUEST...`);
+  const t0=performance.now();
+  const data=await fetchJSONWithTimeout('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body:JSON.stringify({model:selected,max_tokens:getMaxTokens(),temperature:0.1,messages:[{role:'system',content:SYSTEM_PROMPT},{role:'user',content:buildPrompt(subj)}]})
+  },_aiTimeoutMs,signal);
+  const tApi=performance.now()-t0;
+  const ch=data.choices?.[0];
+  if(ch?.finish_reason==='length')throw new Error('Groq response hit the output limit (truncated JSON). Raise hololab_max_tokens or simplify the subject.');
+  const txt=ch?.message?.content||'';if(!txt)throw new Error('Groq returned an empty model response');
+  const t1=performance.now();const r=parseModelJSON(txt);r._apiModel=selected;r._t={api:tApi,parse:performance.now()-t1};return r;
+}
+async function callGemini(subj,modelOverride,signal){
+  const key=getGeminiKey();if(!key)throw new Error('Gemini API key missing');
+  const selected=modelOverride||(getSelectedModel().startsWith('gemini-')?getSelectedModel():DEFAULT_GEMINI_MODEL);
+  addDS(`[AI] GEMINI · ${selected.toUpperCase()} · REQUEST...`);
+  const t0=performance.now();
+  const data=await fetchJSONWithTimeout(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(selected)}:generateContent`,{
+    method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},
+    body:JSON.stringify({systemInstruction:{parts:[{text:SYSTEM_PROMPT}]},contents:[{role:'user',parts:[{text:buildPrompt(subj)}]}],
+      generationConfig:{responseMimeType:'application/json',maxOutputTokens:getMaxTokens(),temperature:0.1}})
+  },_aiTimeoutMs,signal);
+  const tApi=performance.now()-t0;
+  if(data.promptFeedback?.blockReason)throw new Error('Gemini blocked the prompt: '+data.promptFeedback.blockReason);
+  const cand=data.candidates?.[0];
+  if(cand?.finishReason==='MAX_TOKENS')throw new Error('Gemini response hit the output limit (truncated JSON). Raise hololab_max_tokens or simplify the subject.');
+  const txt=(cand?.content?.parts||[]).map(p=>p.text||'').join('');if(!txt)throw new Error('Gemini returned an empty model response');
+  const t1=performance.now();const r=parseModelJSON(txt);r._apiModel=selected;r._t={api:tApi,parse:performance.now()-t1};return r;
+}
+async function callProvider(provider,subj,modelOverride,signal){
+  if(provider==='gemini')return callGemini(subj,modelOverride,signal);
+  if(provider==='groq')return callGroq(subj,modelOverride,signal);
+  throw new Error('Unknown API provider: '+provider);
+}
+function modelChain(p){
+  const sel=getSelectedModel();const base=p==='gemini'?GEMINI_CHAIN:GROQ_CHAIN;
+  const own=p==='gemini'?sel.startsWith('gemini-'):(!sel.startsWith('gemini-')&&sel!=='offline-demo');
+  return own?[sel,...base.filter(m=>m!==sel)]:base.slice();
+}
+// Gemini models in order, then (if a Groq key exists and backup is on) the Groq chain. Auth/network errors skip to the next provider.
+async function aiChain(fn,signal){
+  const chosen=getProvider();
+  if(chosen!=='gemini'&&chosen!=='groq')throw new Error('Select Gemini or Groq for API generation.');
+  const keyOf=p=>p==='gemini'?getGeminiKey():getKey();
+  const other=chosen==='gemini'?'groq':'gemini';
+  const order=[chosen];if(getFallbackOn()&&keyOf(other))order.push(other);
+  const fails=[];let n=0;
+  for(const p of order){
+    if(!keyOf(p)){fails.push(p.toUpperCase()+': key missing');continue;}
+    for(const m of modelChain(p)){
+      _aiTimeoutMs=n===0?75000:35000;n++;
+      try{const r=await fn(p,m);_aiTimeoutMs=75000;r._apiProvider=p;r._fallback=(p!==chosen)||n>1;return r;}
+      catch(err){
+        if(err&&err.cancelled){_aiTimeoutMs=75000;throw err;}
+        const msg=redact(err.message||err);fails.push(p.toUpperCase()+' '+m+': '+msg.slice(0,110));
+        try{addDS('[AI] '+p.toUpperCase()+' '+m+' failed → trying next');}catch(e){}
+        if(/Authentication failed|Network error/i.test(msg))break;
+      }
+    }
+  }
+  _aiTimeoutMs=75000;
+  throw new Error(fails.slice(-6).join(' | '));
+}
+// Selected provider first, then the backup chain
+async function callSelectedAI(subj,signal){
+  if(getProvider()==='demo')throw new Error('OFFLINE DEMO is disabled for API generation. Select Gemini or Groq.');
+  return aiChain((p,m)=>callProvider(p,subj,m,signal),signal);
+}
+function cancelGeneration(){if(_genCtl)_genCtl.abort();}
 
-async function generateHolo() {
-  const s1 = document.getElementById('subjInp').value.trim();
-  const s2 = document.getElementById('subjInp2').value.trim();
+async function generateHolo(){
+  const s1=document.getElementById('subjInp').value.trim(),s2=document.getElementById('subjInp2').value.trim();
   if(!s1){notify('⚠ ENTER SUBJECT');return;}
+  const requested=getProvider();
+  if(requested==='demo'){notify('⚠ Select Gemini or Groq API for real AI holograms');return;}
+  const keyOf=p=>p==='gemini'?getGeminiKey():getKey();
+  const other=requested==='gemini'?'groq':'gemini';
+  if(!keyOf(requested)&&!(getFallbackOn()&&keyOf(other))){notify('⚠ '+requested.toUpperCase()+' API key missing — add it in API SETTINGS');openKey();return;}
+  const subjKey=requested+'|'+s1+'|'+s2;
+  if(_genBusy&&_genSubj===subjKey)return;           // duplicate click / Enter while the same request is running
+  if(_genCtl)_genCtl.abort();                       // a different subject supersedes the older request
+  const myId=++_genId,ctl=new AbortController();_genCtl=ctl;_genBusy=true;_genSubj=subjKey;
   document.getElementById('inputOv').style.display='none';
   showLoad(true);
-  const steps=['CONNECTING TO GROQ AI...','ANALYZING 3D GEOMETRY...','GENERATING VERTICES...','COMPUTING EDGE TOPOLOGY...','APPLYING FRESNEL SHADERS...','CALIBRATING BLOOM FIELD...','INITIALIZING PARTICLES...','ENERGY FIELD PRIMING...'];
-  let si=0,pct=0;
-  const li=setInterval(()=>{
-    pct=Math.min(90,pct+Math.random()*6+2);
-    document.getElementById('lsBar').style.width=pct+'%';
-    if(si<steps.length-1)document.getElementById('lsStep').textContent=steps[si++];
-  },200);
+  const steps=['CONNECTING TO AI PROVIDER...','WAITING FOR AI RESPONSE...','WAITING FOR AI RESPONSE...','PARSING MODEL OUTPUT...'];
+  let si=0,pct=0;const stepEl=document.getElementById('lsStep'),barEl=document.getElementById('lsBar');
+  const li=setInterval(()=>{if(myId!==_genId)return;pct=Math.min(88,pct+2.5);if(barEl)barEl.style.width=pct+'%';if(stepEl)stepEl.textContent=steps[Math.min(si++,steps.length-1)];},500);
+  const T0=performance.now();
   try{
     let data;
-    if(getKey()){
-      if(s2){
-        const [d1,d2]=await Promise.all([callGroq(s1),callGroq(s2)]);
-        data={subject:s1+' + '+s2,description:d1.description+' // '+d2.description,
-          color:d1.color,
-          objects:[...d1.objects,...d2.objects.map(o=>({...o,position:[o.position[0]+3,o.position[1],o.position[2]]}))],
-          labels:[...d1.labels,...d2.labels.map(l=>({...l,position:[l.position[0]+3,l.position[1],l.position[2]]}))]};
-      } else data=await callGroq(s1);
-    } else data=getDemo(s1);
-    clearInterval(li);
-    document.getElementById('lsBar').style.width='100%';
-    document.getElementById('lsStep').textContent='ULTRA HOLOGRAM READY';
-    setTimeout(()=>{showLoad(false);loadData(data);},300);
+    if(s2){
+      const d1=await callSelectedAI(s1,ctl.signal),d2=await callSelectedAI(s2,ctl.signal);
+      const sh=(o)=>({...o,position:[(Number(o.position?.[0])||0)+3,Number(o.position?.[1])||0,Number(o.position?.[2])||0]});
+      data={subject:s1+' + '+s2,description:(d1.description||'')+' // '+(d2.description||''),color:d1.color||'#00dfff',
+        objects:[...(d1.objects||[]),...(d2.objects||[]).map(sh)],labels:[...(d1.labels||[]),...(d2.labels||[]).map(sh)],
+        _apiProvider:d1._apiProvider,_apiModel:d1._apiModel+(d2._apiModel!==d1._apiModel?' + '+d2._apiModel:''),_fallback:d1._fallback||d2._fallback,
+        _t:{api:(d1._t?.api||0)+(d2._t?.api||0),parse:(d1._t?.parse||0)+(d2._t?.parse||0)}};
+    }else data=await callSelectedAI(s1,ctl.signal);
+    if(myId!==_genId)return;                         // superseded: never overwrite the newer model
+    if(stepEl)stepEl.textContent='VALIDATING GEOMETRY...';
+    const tv0=performance.now();
+    const clean=sanitizeModel(data);
+    if(!clean.objects.length)throw new Error('API returned no usable 3D geometry (invalid vertices/edges). Try a different subject.');
+    const tVal=performance.now()-tv0;
+    if(stepEl)stepEl.textContent='BUILDING 3D OBJECTS...';
+    await new Promise(r=>requestAnimationFrame(()=>r()));
+    if(myId!==_genId)return;
+    const tb0=performance.now();
+    loadData(clean);                                 // throws on failure; previous scene is preserved
+    const tBuild=performance.now()-tb0;
+    if(barEl)barEl.style.width='100%';
+    showLoad(false);
+    const prov=String(data._apiProvider).toUpperCase(),mod=data._apiModel||getSelectedModel();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      addDS(`[TIMING] API ${Math.round(data._t?.api||0)}ms · PARSE ${Math.round((data._t?.parse||0)+tVal)}ms · BUILD ${Math.round(tBuild)}ms · VISIBLE ${Math.round(performance.now()-T0)}ms total`);
+    }));
+    addDS(`[AI] DEPLOYED via ${prov} · ${mod}`+(data._fallback?' (BACKUP PROVIDER)':'')+(clean._report.droppedE||clean._report.droppedV?` · dropped ${clean._report.droppedV} vtx / ${clean._report.droppedE} edges`:''));
+    notify('✓ DEPLOYED · '+prov+' · '+mod+(data._fallback?' · BACKUP USED':''),4200);
+    setTimeout(()=>{try{saveGeneratedMemory(clean,data._apiProvider,mod);}catch(me){addDS('[MEMORY] Save skipped: '+redact(me.message));}},0); // never blocks rendering
   }catch(e){
-    clearInterval(li);showLoad(false);
-    notify('⚠ AI ERROR — DEMO MODE');
-    loadData(getDemo(s1));
-  }
+    if(myId!==_genId)return;
+    showLoad(false);
+    if(e&&e.cancelled){notify('GENERATION CANCELLED');}
+    else{addDS('[API ERROR] '+redact(e.message||e).slice(0,300));notify('⚠ HOLOGRAM FAILED — '+redact(e.message||'GENERATION FAILED').slice(0,120),6000);}
+    document.getElementById('inputOv').style.display='flex';
+  }finally{clearInterval(li);if(myId===_genId){_genBusy=false;_genCtl=null;}}
 }
 
 function loadData(data) {
+  data=sanitizeModel(data);
+  if(!data.objects.length)throw new Error('Model has no usable geometry');
+  const _prev={s:S.subject,d:S.description,o:S.objects,l:S.labels};
   S.subject=data.subject||'HOLOGRAM';
   S.description=data.description||'';
   S.objects=(data.objects||[]).map(obj=>({
@@ -1764,7 +2384,7 @@ function loadData(data) {
     position:obj.position||[0,0,0],scale:obj.scale||[1,1,1]
   }));
   S.labels=data.labels||[];
-  buildHolo(S.objects,S.labels);
+  try{buildHolo(S.objects,S.labels);}catch(err){S.subject=_prev.s;S.description=_prev.d;S.objects=_prev.o;S.labels=_prev.l;throw new Error('Scene build failed: '+redact(err.message));}
   updatePanels();
   document.getElementById('tbSubj').textContent=S.subject.toUpperCase().slice(0,14);
   document.getElementById('btmDesc').textContent=S.description;
@@ -1991,12 +2611,96 @@ function addDS(line){dsArr.unshift(line);if(dsArr.length>14)dsArr.pop();
 
 function speak(t){if(!window.speechSynthesis)return;const u=new SpeechSynthesisUtterance(t);u.rate=1.0;u.pitch=0.75;u.volume=0.75;speechSynthesis.speak(u);}
 
-function getKey(){return localStorage.getItem('nova_groq')||'';}
-function saveKey(){const v=document.getElementById('keyInp').value.trim();if(!v)return;localStorage.setItem('nova_groq',v);document.getElementById('keyModal').style.display='none';notify('✓ KEY SAVED');}
-function openKey(){document.getElementById('keyModal').style.display='flex';const k=getKey();if(k)document.getElementById('keyInp').value=k;}
-function openInput(){document.getElementById('inputOv').style.display='flex';}
+function saveKey(){
+  const g=document.getElementById('keyInp').value.trim(),m=document.getElementById('geminiKeyInp').value.trim();
+  if(g)localStorage.setItem('nova_groq',g);if(m)localStorage.setItem('nova_gemini',m);
+  document.getElementById('keyModal').style.display='none';notify('✓ API SETTINGS SAVED LOCALLY');
+}
+function openKey(){document.getElementById('keyModal').style.display='flex';document.getElementById('keyInp').value=getKey();document.getElementById('geminiKeyInp').value=getGeminiKey();}
+function closeKey(){document.getElementById('keyModal').style.display='none';}
+function openInput(){document.getElementById('inputOv').style.display='flex';const p=document.getElementById('aiProvider');p.value=localStorage.getItem('hololab_provider')||'gemini';providerChanged();}
+
+// MEMORY VAULT: browser-local notes + generated model snapshots
+const MEMORY_KEY='hololab_memories_v1';
+function readMemories(){try{const x=JSON.parse(localStorage.getItem(MEMORY_KEY)||'[]');return Array.isArray(x)?x:[]}catch{return []}}
+function writeMemories(items){
+  let saved=false;
+  for(let n=Math.min(items.length,20);n>=1;n--){try{localStorage.setItem(MEMORY_KEY,JSON.stringify(items.slice(0,n)));saved=true;break}catch(err){}}
+  if(!saved){notify('⚠ MEMORY STORAGE FULL — EXPORT OR DELETE OLD ITEMS');return false}
+  renderMemories();return true
+}
+function safeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function openMemory(){document.getElementById('memoryModal').style.display='flex';renderMemories()}
+function closeMemory(){document.getElementById('memoryModal').style.display='none'}
+function saveManualMemory(){const title=document.getElementById('memoryTitle').value.trim()||'Untitled Note';const text=document.getElementById('memoryText').value.trim();if(!text){notify('⚠ WRITE A NOTE FIRST');return}const items=readMemories();items.unshift({id:Date.now(),kind:'note',title,text,created:new Date().toISOString()});writeMemories(items);document.getElementById('memoryTitle').value='';document.getElementById('memoryText').value='';notify('🧠 NOTE SAVED')}
+function saveGeneratedMemory(data,provider,model){const items=readMemories();items.unshift({id:Date.now(),kind:'model',title:data.subject||'Generated hologram',text:data.description||'Generated 3D hologram',provider,model,created:new Date().toISOString(),data});return writeMemories(items)}
+function saveCurrentHoloMemory(){if(!S.objects?.length){notify('⚠ NO MODEL TO SAVE');return}saveGeneratedMemory({subject:S.subject,description:S.description,color:'#00ffff',objects:S.objects,labels:S.labels},getProvider(),getSelectedModel());notify('⬡ CURRENT MODEL SAVED TO MEMORY')}
+function renderMemories(){const root=document.getElementById('memoryList');if(!root)return;const items=readMemories();if(!items.length){root.innerHTML='<div class="mem-empty">NO MEMORIES SAVED YET<br>Save a note or generate a hologram to build your vault.</div>';return}root.innerHTML=items.map(it=>`<div class="mem-card"><div class="mem-card-title">${safeText(it.kind==='model'?'⬡ MODEL · ':'📝 NOTE · ')}${safeText(it.title)}</div><div class="mem-card-body">${safeText(it.text||'')}<br><span style="opacity:.65">${safeText(new Date(it.created).toLocaleString())}${it.model?' · '+safeText(it.model):''}</span></div><div class="mem-card-actions">${it.kind==='model'?`<button class="mem-action" onclick="restoreMemory(${Number(it.id)})">↻ LOAD MODEL</button>`:''}<button class="mem-action" onclick="deleteMemory(${Number(it.id)})">✕ DELETE</button></div></div>`).join('')}
+function restoreMemory(id){const it=readMemories().find(x=>x.id===id);if(!it?.data){notify('⚠ MODEL DATA NOT FOUND');return}closeMemory();try{loadData(it.data);notify('⬡ RESTORED: '+(it.title||'MODEL'))}catch(e){notify('⚠ SAVED MODEL INVALID: '+redact(e.message).slice(0,80))}}
+function deleteMemory(id){writeMemories(readMemories().filter(x=>x.id!==id));notify('MEMORY DELETED')}
+function exportMemories(){const blob=new Blob([JSON.stringify(readMemories(),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='hololab-memory-backup.json';a.click();URL.revokeObjectURL(url);notify('⇩ MEMORY BACKUP EXPORTED')}
+// Load saved provider/model preferences into the selectors on startup.
+window.addEventListener('DOMContentLoaded',()=>{const p=document.getElementById('aiProvider');if(p)p.value=localStorage.getItem('hololab_provider')||'gemini';if(p)providerChanged();});
+const _QUAL={ultra:{pr:1.5,ms:16,bloom:true},balanced:{pr:1.15,ms:18,bloom:true},performance:{pr:1,ms:24,bloom:false},adaptive:{pr:1.25,ms:16,bloom:true}};
+let _adaptiveTier='balanced', _adaptiveLowCount=0, _adaptiveHighCount=0, _lastAdaptiveCheck=0;
+function _qualityKey(){return localStorage.getItem('hololab_quality')||(LOW_POWER_MODE?'performance':'adaptive')}
+function _pixelCap(){
+  const key=_qualityKey();
+  const q=key==='adaptive'?(_QUAL[_adaptiveTier]||_QUAL.balanced):(_QUAL[key]||_QUAL.balanced);
+  // Avoid expensive high-DPI rendering on low-memory devices, even if ULTRA is selected.
+  const hardCap=LOW_POWER_MODE?1.15:1.5;
+  return Math.min(window.devicePixelRatio||1,q.pr,hardCap);
+}
+function _applyRenderProfile(){
+  const key=_qualityKey();
+  const profile=key==='adaptive'?(_QUAL[_adaptiveTier]||_QUAL.balanced):(_QUAL[key]||_QUAL.balanced);
+  _minFrameMs=profile.ms;_bloomAllowed=profile.bloom;
+  renderer.setPixelRatio(_pixelCap());
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  if(composer)composer.setSize(window.innerWidth,window.innerHeight);
+  if(bloomPass){bloomPass.strength=profile.bloom?(_adaptiveTier==='ultra'?1.8:_adaptiveTier==='performance'?0.85:1.35):0;}
+  const sel=document.getElementById('qualityMode');if(sel&&sel.value!==key)sel.value=key;
+}
+function applyQuality(mode){
+  if(!_QUAL[mode])mode='adaptive';
+  localStorage.setItem('hololab_quality',mode);
+  if(mode==='adaptive')_adaptiveTier=LOW_POWER_MODE?'performance':'balanced';
+  else _adaptiveTier=mode;
+  _adaptiveLowCount=0;_adaptiveHighCount=0;
+  _applyRenderProfile();
+  const hint=document.getElementById('nebulaStatus');
+  if(hint)hint.textContent=mode==='adaptive'?'NEBULA: AUTO ADAPTIVE':('NEBULA: '+mode.toUpperCase());
+}
+function _updateAdaptiveQuality(t){
+  if(_qualityKey()!=='adaptive'||t-_lastAdaptiveCheck<2200||S.fpsArr.length<12)return;
+  _lastAdaptiveCheck=t;
+  const fps=S.fpsArr.reduce((a,b)=>a+b,0)/S.fpsArr.length;
+  if(fps<24){_adaptiveLowCount++;_adaptiveHighCount=0;}
+  else if(fps>43){_adaptiveHighCount++;_adaptiveLowCount=0;}
+  else {_adaptiveLowCount=0;_adaptiveHighCount=0;}
+  // Detail-preserving policy: do not silently downgrade bloom/render profile when FPS dips.
+  // The selected graphics profile stays intact; frame pacing remains display-driven.
+  if(_adaptiveLowCount>=2){
+    _adaptiveLowCount=0;
+    const h=document.getElementById('nebulaStatus');if(h)h.textContent='NEBULA: DETAIL PRESERVED · DEVICE UNDER LOAD';
+  } else if(_adaptiveHighCount>=5){
+    _adaptiveTier=_adaptiveTier==='performance'?'balanced':'ultra';
+    _adaptiveHighCount=0;_applyRenderProfile();
+    const h=document.getElementById('nebulaStatus');if(h)h.textContent='NEBULA: AUTO → '+_adaptiveTier.toUpperCase();
+  }
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  const fb=document.getElementById('aiFallback');if(fb)fb.checked=getFallbackOn();
+  applyQuality(_qualityKey());
+});
 function se(s){document.getElementById('subjInp').value=s;}
-function showLoad(on){document.getElementById('loadSc').style.display=on?'flex':'none';if(on)document.getElementById('lsBar').style.width='0%';}
+function showLoad(on){
+  const ls=document.getElementById('loadSc');ls.style.display=on?'flex':'none';
+  if(on)document.getElementById('lsBar').style.width='0%';
+  if(!document.getElementById('lsCancel')){const b=document.createElement('button');b.id='lsCancel';b.textContent='✕ CANCEL';
+    b.style.cssText='margin-top:18px;padding:8px 20px;background:transparent;color:var(--c);border:1px solid var(--line);border-radius:7px;font-family:var(--mono);font-size:11px;cursor:pointer';
+    b.onclick=cancelGeneration;ls.appendChild(b);}
+}
 function notify(msg,dur=2800){document.querySelectorAll('.notif').forEach(n=>n.remove());const el=document.createElement('div');el.className='notif';el.textContent=msg;document.body.appendChild(el);setTimeout(()=>{el.style.transition='opacity .4s';el.style.opacity='0';setTimeout(()=>el.remove(),400);},dur);}
 
 function clock(){
@@ -2009,7 +2713,7 @@ function clock(){
 setInterval(clock,1000);clock();
 
 document.addEventListener('keydown',e=>{
-  if(['subjInp','subjInp2','keyInp'].includes(document.activeElement?.id))return;
+  if(['subjInp','subjInp2','keyInp','geminiKeyInp','memoryTitle','memoryText'].includes(document.activeElement?.id))return;
   const k=e.key;
   if(k==='r'||k==='R'){S.autoRotate=!S.autoRotate;document.getElementById('bAutoRotate').textContent='↻ ROT: '+(S.autoRotate?'ON':'OFF');}
   if(k==='b'||k==='E')togBloom();
@@ -2029,25 +2733,77 @@ document.addEventListener('keydown',e=>{
   if(k==='Enter'&&document.getElementById('inputOv').style.display!=='none')generateHolo();
 });
 
+// ═════ V15 IRON PROJECTION DECK — lightweight HUD controls ═════
+let ironBlueprintOn = false;
+let _ironHudLastUpdate = 0;
+function toggleIronProjection(force){
+  const on = typeof force === 'boolean' ? force : !document.body.classList.contains('iron-projection');
+  document.body.classList.toggle('iron-projection', on);
+  const hud = document.getElementById('ironHud');
+  const btn = document.getElementById('bIronHUD');
+  if(hud) hud.setAttribute('aria-hidden', on ? 'false' : 'true');
+  if(btn){btn.textContent = on ? '⬡ IRON HUD: ON' : '⬡ IRON HUD: OFF';btn.classList.toggle('on',on);}
+  if(on){updateIronHUD(true); if(typeof notify==='function')notify('⬡ IRON PROJECTION DECK ACTIVE');}
+  else if(typeof notify==='function')notify('IRON HUD CLOSED');
+}
+function ironBlueprint(){
+  if(typeof togGrid==='function')togGrid();
+  if(typeof togSolid==='function' && !ironBlueprintOn) { /* keep current solid setting; blueprint uses grid + HUD */ }
+  ironBlueprintOn=!ironBlueprintOn;
+  document.querySelectorAll('#ironHud .ih-btn').forEach(b=>{if(b.textContent.includes('BLUEPRINT'))b.classList.toggle('active',ironBlueprintOn)});
+  const mode=document.getElementById('ihMode');if(mode)mode.textContent=ironBlueprintOn?'BLUEPRINT':'HOLOGRAM';
+  if(typeof notify==='function')notify(ironBlueprintOn?'BLUEPRINT GRID ENABLED':'BLUEPRINT GRID TOGGLED');
+}
+function ironFocus(){
+  if(typeof resetCam==='function')resetCam();
+  if(typeof S!=='undefined' && S.holoGroup && typeof S.holoGroup==='object'){
+    try{const box=new THREE.Box3().setFromObject(S.holoGroup);if(!box.isEmpty()){const c=box.getCenter(new THREE.Vector3());camera.lookAt(c);}}catch(e){}
+  }
+  if(typeof notify==='function')notify('◎ MODEL FOCUS RESET');
+}
+function updateIronHUD(force){
+  const root=document.getElementById('ironHud');if(!root||!document.body.classList.contains('iron-projection'))return;
+  const now=performance.now();if(!force&&now-_ironHudLastUpdate<500)return;_ironHudLastUpdate=now;
+  const text=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=String(v);};
+  try{
+    if(typeof S!=='undefined'){
+      text('ihSubject',String(S.subject||'AWAITING MODEL').toUpperCase().slice(0,30));
+      const count=Array.isArray(S.objects)?S.objects.length:(S.holoGroup&&S.holoGroup.children?S.holoGroup.children.length:0);
+      text('ihObjects',count||'0');
+      const fps=Array.isArray(S.fpsArr)&&S.fpsArr.length?Math.round(S.fpsArr.reduce((a,b)=>a+b,0)/S.fpsArr.length):'—';text('ihFPS',fps);
+      text('ihAssembly',S.exploding?'DECONSTRUCTING':S.assembling?'ASSEMBLING':'LOCKED');
+    }
+  }catch(e){}
+}
+
 // MAIN ANIMATION LOOP
+let _frameCount = 0, _lastRenderTime = 0, _minFrameMs = 0, _dtMs = 16.7, _bloomAllowed = true;
 function animate(t) {
   requestAnimationFrame(animate);
-  const dt=t-(S.lastT||t)||16;S.lastT=t;
+  if (document.hidden || window.HLA_PAUSE) { S.lastT = t; return; }   // V9: lab render paused while Assistant page is open (scene kept)
+  // Let the display schedule frames naturally (usually 60 Hz) instead of imposing a 41–60 FPS ceiling.
+  // This changes frame pacing only: geometry, shaders, textures, bloom and detail are preserved.
+  _lastRenderTime = t;
+  const dt=Math.min(40, t-(S.lastT||t)||16);S.lastT=t;
+  _frameCount++; 
   S.fpsArr.push(1000/dt);if(S.fpsArr.length>40)S.fpsArr.shift();
   if(t-S.lastFpsDisp>400){
     document.getElementById('tbFPS').textContent=Math.round(S.fpsArr.reduce((a,b)=>a+b,0)/S.fpsArr.length);
     S.lastFpsDisp=t;
   }
+  _dtMs=dt;
+  _updateAdaptiveQuality(t);
+  updateIronHUD(false);
   updateCam();
   animRings(t);
   animParts();
   animPulse(t);
   updateExplode(dt);
   processAudio();
-  drawMini();
-  drawEnergyWaves();
+  // Canvas overlays are cheaper at half rate; keep the main 3D scene responsive.
+  if ((_frameCount & 1) === 0) { drawMini(); drawEnergyWaves(); }
 
-  if(composer&&S.bloomOn) composer.render();
+  if(composer&&S.bloomOn&&_bloomAllowed) composer.render();
   else renderer.render(scene,camera);
 }
 
@@ -2319,9 +3075,1040 @@ XR.init().catch(()=>{});
 // Startup Notification
 setTimeout(()=>{
   spawnEnergyWave(window.innerWidth/2,window.innerHeight/2,'#00ffff',900,4);
-  notify('NOVA v7.1 DETAIL ENGINE READY · PRESS N FOR NEW MODEL');
+  notify('NOVA v7.2 GEMINI + GROQ + MEMORY VAULT READY · PRESS N FOR NEW MODEL');
 },300);
 
+</script>
+
+<!-- V14 Model Forge: edits current model data without replacing the renderer or AI stack -->
+<div id="mfModal" role="dialog" aria-modal="true" aria-labelledby="mfTitle">
+ <div class="mf-box">
+  <div class="mf-head"><div><div class="mf-title" id="mfTitle">MODEL FORGE / OBJECT STUDIO</div><div class="mf-sub">Edit the current hologram components. Changes rebuild the existing scene; use Export JSON for a portable backup.</div></div><button class="mem-close" onclick="closeModelForge()">CLOSE ✕</button></div>
+  <div class="mf-grid">
+   <label class="mf-field" style="grid-column:span 2">SELECT COMPONENT<select id="mfObject" onchange="mfLoadSelected()"></select></label>
+   <label class="mf-field">COMPONENT NAME<input id="mfName" maxlength="60" placeholder="component_name"></label>
+  </div>
+  <div class="mf-section">TRANSFORM · POSITION</div>
+  <div class="mf-grid"><label class="mf-field">X<input id="mfPX" type="number" step="0.1"></label><label class="mf-field">Y<input id="mfPY" type="number" step="0.1"></label><label class="mf-field">Z<input id="mfPZ" type="number" step="0.1"></label></div>
+  <div class="mf-section">TRANSFORM · SCALE</div>
+  <div class="mf-grid"><label class="mf-field">X<input id="mfSX" type="number" min="0.05" max="10" step="0.1"></label><label class="mf-field">Y<input id="mfSY" type="number" min="0.05" max="10" step="0.1"></label><label class="mf-field">Z<input id="mfSZ" type="number" min="0.05" max="10" step="0.1"></label></div>
+  <div class="mf-section">MATERIAL · HOLOGRAM COLOR</div>
+  <div class="mf-grid"><label class="mf-field">EMISSIVE COLOR<input id="mfColor" type="color" value="#65f7ff" style="height:40px;padding:4px"></label><label class="mf-field">GLOW INTENSITY (METADATA)<input id="mfGlow" type="number" min="0" max="2" step="0.1" value="0.8"></label><label class="mf-field">GEOMETRY INFO<input id="mfInfo" readonly></label></div>
+  <div class="mf-actions"><button class="mf-btn primary" onclick="mfApply()">APPLY CHANGES</button><button class="mf-btn" onclick="mfAddPrimitive('box')">＋ ADD BOX</button><button class="mf-btn" onclick="mfAddPrimitive('pyramid')">＋ ADD PYRAMID</button><button class="mf-btn" onclick="mfAddPrimitive('ring')">＋ ADD RING</button><button class="mf-btn" onclick="mfDuplicate()">DUPLICATE</button><button class="mf-btn danger" onclick="mfDelete()">DELETE COMPONENT</button></div>
+  <div class="mf-section">PROJECT FILES</div>
+  <div class="mf-actions"><button class="mf-btn" onclick="mfSaveLocal()">SAVE SCENE IN BROWSER</button><button class="mf-btn" onclick="mfLoadLocal()">LOAD BROWSER SAVE</button><button class="mf-btn" onclick="mfExport()">EXPORT SCENE JSON</button><button class="mf-btn" onclick="document.getElementById('mfImportFile').click()">IMPORT SCENE JSON</button><input id="mfImportFile" class="mf-file" type="file" accept=".json,application/json" onchange="mfImport(event)"></div>
+  <div id="mfStatus" class="mf-status" aria-live="polite">Ready. Select a component or add a primitive.</div>
+ </div>
+</div>
+<script>
+// ╔══════════════════════════════════════════════════════════════════╗
+//  HOLOLAB V9 — AI COMMAND ASSISTANT
+//  Separate page (overlay) · local safe commands · AI explain/edit
+//  Reuses the existing Gemini/Groq keys + settings. No extra API.
+//  Rendering of the lab is only PAUSED while this page is open;
+//  the Three.js scene is never destroyed or reloaded.
+// ╚══════════════════════════════════════════════════════════════════╝
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const HLA={open:false,busy:false,ctl:null,pending:null,undo:null,redo:null,labelsVisible:true,wirePct:100,lastGroup:null,hist:[],prevT:0,prevOn:false,lastText:'',lastTextT:0};
+window.HLA=HLA; window.HLA_PAUSE=false;
+
+// ── helpers ───────────────────────────────────────────────
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const r2=n=>Math.round(Number(n)*100)/100;
+const red=s=>{try{return redact(s);}catch(e){return String(s||'');}};
+function fmt(t){
+  let s=esc(t).replace(/\*\*([^*\n]+)\*\*/g,'<b>$1</b>').replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  return s.split('\n').map(l=>/^\s*[-•*]\s+/.test(l)?'<div class="hla-li">'+l.replace(/^\s*[-•*]\s+/,'')+'</div>':(l.trim()===''?'<div class="hla-gap"></div>':'<div>'+l+'</div>')).join('');
+}
+function addMsg(kind,badge,text,o){
+  o=o||{};const log=$('hlaLog');if(!log)return null;
+  const d=document.createElement('div');d.className='hla-msg '+kind;
+  const b=document.createElement('div');b.className='hla-badge';b.textContent=badge;
+  const body=document.createElement('div');body.className='hla-body';
+  body.innerHTML=o.html!=null?o.html:fmt(text);
+  d.appendChild(b);d.appendChild(body);
+  if(o.note){const n=document.createElement('div');n.className='hla-note';n.textContent=o.note;d.appendChild(n);}
+  log.appendChild(d);
+  while(log.children.length>120){const f=log.firstChild;if(HLA.pending&&HLA.pending.node===f)discardPending(true);log.removeChild(f);}
+  log.scrollTop=log.scrollHeight;return d;
+}
+function setThinking(on,txt){
+  const o=$('hlaOrb');if(o)o.classList.toggle('think',!!on);
+  const s=$('hlaOrbState');if(s)s.textContent=on?(txt||'PROCESSING…'):'ONLINE · IDLE';
+  const b=$('hlaSend');if(b)b.classList.toggle('busy',!!on);
+}
+
+// ── live state (REAL application state only) ──────────────
+function provider(){try{return getProvider();}catch(e){return 'gemini';}}
+function effModel(p){
+  const sel=(typeof getSelectedModel==='function'?getSelectedModel():'')||'';
+  if(p==='gemini')return sel.startsWith('gemini-')?sel:DEFAULT_GEMINI_MODEL;
+  if(p==='groq')return (!sel.startsWith('gemini-')&&sel!=='offline-demo'&&sel)?sel:GROQ_MODEL_SECONDARY;
+  return '—';
+}
+function hasKey(p){try{return p==='gemini'?!!getGeminiKey():p==='groq'?!!getKey():false;}catch(e){return false;}}
+function worldBox(o){
+  const p=o.position||[0,0,0],s=o.scale||[1,1,1],mn=[Infinity,Infinity,Infinity],mx=[-Infinity,-Infinity,-Infinity];
+  for(const v of (o.vertices||[]))for(let k=0;k<3;k++){const w=Number(p[k])+Number(s[k])*Number(v[k]);if(w<mn[k])mn[k]=w;if(w>mx[k])mx[k]=w;}
+  return mn.every(Number.isFinite)&&mx.every(Number.isFinite)?{mn,mx}:null;
+}
+function facts(){
+  if(!S.objects||!S.objects.length)return null;
+  let tv=0,te=0;const mn=[Infinity,Infinity,Infinity],mx=[-Infinity,-Infinity,-Infinity];
+  const objs=S.objects.map(o=>{
+    const v=(o.vertices||[]).length,e=(o.edges||[]).length;tv+=v;te+=e;
+    const b=worldBox(o);if(b)for(let k=0;k<3;k++){mn[k]=Math.min(mn[k],b.mn[k]);mx[k]=Math.max(mx[k],b.mx[k]);}
+    return {name:String(o.name||'component'),v,e,pos:(o.position||[0,0,0]).map(r2),scale:(o.scale||[1,1,1]).map(r2),size:b?b.mx.map((x,k)=>r2(x-b.mn[k])):null};
+  });
+  return {subject:S.subject||'',description:S.description||'',objects:objs,labels:(S.labels||[]).map(l=>String(l.text||'')).slice(0,30),
+    totals:{components:objs.length,vertices:tv,edges:te},
+    bbox:mn.every(Number.isFinite)?{min:mn.map(r2),max:mx.map(r2),size:mx.map((x,k)=>r2(x-mn[k]))}:null};
+}
+function visibleLabelCount(){let n=0;if(S.holoGroup)S.holoGroup.children.forEach(c=>{if(c.isSprite&&c.visible)n++;});return n;}
+function labelCount(){let n=0;if(S.holoGroup)S.holoGroup.children.forEach(c=>{if(c.isSprite)n++;});return n;}
+function appState(){
+  const p=provider();
+  return {aiProvider:p,aiModel:effModel(p),keySaved:hasKey(p),backupProviderOn:(()=>{try{return getFallbackOn();}catch(e){return false;}})(),
+    theme:(THEMES[S.themeIdx]||{}).n,autoRotate:!!S.autoRotate,bloom:!!S.bloomOn,grid:!!S.gridOn,stars:!!S.starsOn,particles:!!S.partsOn,reflection:!!S.reflOn,
+    labelsVisible:HLA.labelsVisible,labelCount:labelCount(),wireIntensityPct:HLA.wirePct,zoomX:r2(9/S.camRadius),tour:!!S.tourActive,modelLoaded:!!(S.objects&&S.objects.length)};
+}
+function updateChrome(){
+  const p=provider(),k=hasKey(p),f=facts();
+  const ch=$('hlaChips');
+  if(ch)ch.innerHTML=
+    '<span class="hla-chip vio">MODEL: '+esc(f?String(f.subject||'UNTITLED').toUpperCase().slice(0,22):'NONE LOADED')+'</span>'+
+    '<span class="hla-chip">AI: '+esc(p==='demo'?'OFFLINE DEMO':p.toUpperCase()+' · '+effModel(p))+'</span>'+
+    '<span class="hla-chip '+(p==='demo'?'bad':(k?'ok':'bad'))+'">KEY: '+(p==='demo'?'N/A':(k?'SAVED':'MISSING'))+'</span>';
+  const mc=$('hlaModelCard');
+  if(mc)mc.innerHTML=f?('<b>'+esc(String(f.subject).toUpperCase().slice(0,28))+'</b><br>COMPONENTS: <b>'+f.totals.components+'</b><br>VERTICES: <b>'+f.totals.vertices+'</b> · EDGES: <b>'+f.totals.edges+'</b><br>THEME: <b>'+esc((THEMES[S.themeIdx]||{}).n)+'</b> · LABELS: <b>'+(HLA.labelsVisible?'SHOWN':'HIDDEN')+'</b>'):'No hologram loaded yet.<br>Use ⬡ NEW MODEL in the lab.';
+  const ub=$('hlaUndoBtn'),rb=$('hlaRedoBtn');
+  if(ub)ub.disabled=!HLA.undo;
+  if(rb)rb.disabled=!HLA.redo;
+  refreshGuardian();
+}
+
+// ── open / close (scene is only paused, never destroyed) ──
+function openAssistant(){
+  try{hideInspector();hideCtxMenu();}catch(e){}
+  const pg=$('hlaPage');if(!pg)return;
+  pg.style.display='flex';HLA.open=true;window.HLA_PAUSE=true;
+  updateChrome();
+  setTimeout(()=>{try{$('hlaInput').focus();}catch(e){}},60);
+  if(HLA.pending)startPreview();
+}
+function closeAssistant(){
+  const pg=$('hlaPage');if(!pg)return;
+  pg.style.display='none';HLA.open=false;window.HLA_PAUSE=false;
+  try{if(HLA.prevT){clearTimeout(HLA.prevT);HLA.prevT=0;}HLA.prevOn=false;}catch(e){}
+}
+window.openAssistant=openAssistant;window.closeAssistant=closeAssistant;
+
+// ── local scene controls (existing functions/state only) ──
+function applyLabels(){if(S.holoGroup)S.holoGroup.children.forEach(c=>{if(c.isSprite)c.visible=HLA.labelsVisible;});}
+function applyWire(){const op=Math.min(1,0.85*HLA.wirePct/100);(S.wireMats||[]).forEach(m=>{if(m&&m.uniforms&&m.uniforms.opacity)m.uniforms.opacity.value=op;});}
+function reapply(){applyLabels();applyWire();HLA.lastGroup=S.holoGroup;}
+setInterval(()=>{if(S.holoGroup!==HLA.lastGroup)reapply();},700); // model rebuilt elsewhere → keep label/wire settings
+function setRotBtn(){const b=$('bAutoRotate');if(b){b.textContent='↻ ROT: '+(S.autoRotate?'ON':'OFF');b.className='hbtn'+(S.autoRotate?' on':'');}}
+function stopTourIfAny(){if(S.tourActive){try{startTour();}catch(e){}}}
+const COLOR_MAP=[
+  [/\b(cyan|aqua|turquoise)\b/,0],[/\b(green|matrix|hara)\b/,1],[/\b(yellow|amber|gold|golden|pila|peela)\b/,2],
+  [/\b(red|crimson|laal|lal)\b/,3],[/\b(violet|purple|jamuni|magenta)\b/,4],[/\b(white|safed|silver)\b/,5],
+  [/\b(ice|blue|neela|nila)\b/,6],[/\b(orange|fire|saffron)\b/,7]];
+function applyThemeIdx(i){
+  const t=THEMES[i];if(!t)throw new Error('theme missing');
+  S.themeIdx=i;document.body.className=t.cls;S.colorHex=t.hex;S.colorThree=t.t;
+  buildScene();if(S.objects.length)buildHolo(S.objects,S.labels);
+  reapply();try{spawnEnergyWave(innerWidth/2,innerHeight/2,t.hex,500,5);}catch(e){}
+  return t;
+}
+function resetAll(){
+  resetCam();try{clearHighlight();}catch(e){}
+  if(S.holoGroup)S.holoGroup.children.forEach(c=>{c.visible=true;});
+  HLA.labelsVisible=true;HLA.wirePct=100;S.autoRotate=true;setRotBtn();
+  const tb=$('bTour');if(tb)tb.classList.remove('on');
+  S.exploding=false;if(S.holoGroup)trigAssemble();
+  reapply();
+}
+const TOGGLES={bloom:{rx:/bloom/,get:()=>S.bloomOn,fn:()=>togBloom(),n:'Bloom'},grid:{rx:/\bgrid\b/,get:()=>S.gridOn,fn:()=>togGrid(),n:'Grid'},
+  stars:{rx:/\bstars?\b|starfield/,get:()=>S.starsOn,fn:()=>togStars(),n:'Stars'},particles:{rx:/particle/,get:()=>S.partsOn,fn:()=>togParts(),n:'Particles'},
+  reflection:{rx:/reflect|refl\b/,get:()=>S.reflOn,fn:()=>togRefl(),n:'Reflection'}};
+
+// ── intent parser (supported commands only) ───────────────
+const HELP=
+'**What I can do right now**\n'+
+'- **Explain** (AI): `Is hologram ko explain karo`, `explain in detail`, `explain in short`\n'+
+'- **Verified local info**: `short summary`, `show details`, `system status`\n'+
+'- **Scene controls** (no API): `zoom in` / `zoom out`, `rotate` / `stop rotate`, `labels hide` / `labels show`, `colour cyan` (cyan, green, amber, red, violet, white, ice/blue, orange), `wireframe intensity kam` / `zyada`, `bloom off`, `grid on`, `stars off`, `particles off`, `reflection off`, `explode`, `assemble`, `tour`, `reset hologram`\n'+
+'- **Edit model** (AI + validation + your approval): `Is model mein wings add karo`, `Extra components remove karo`\n'+
+'- **Navigate**: `open lab`\n\n'+
+'I only see HOLOLAB\'s live scene. I cannot access your files, OS, or other systems, and I never show API keys.';
+function dirOf(t){
+  const off=/\b(off|hide|band|disable|hata|hatao|remove|chhupa|chupa)\b/.test(t),on=/\b(on|show|enable|chalu|start|dikha|dikhao)\b/.test(t);
+  return off&&!on?'off':on&&!off?'on':'toggle';
+}
+function parse(raw){
+  const t=raw.toLowerCase().replace(/\s+/g,' ').trim();
+  if(!t)return {type:'none'};
+  if(/\b(api[\s-]?key|secret|password|token)\b/.test(t)&&/\b(show|print|reveal|dikha|dikhao|batao|tell|what|kya|display|share)\b/.test(t))return {type:'refuse-key'};
+  if(/\b(my (files?|folder|computer|laptop|pc|disk)|operating system|terminal|command prompt|registry|hard ?drive)\b/.test(t))return {type:'refuse-os'};
+  if(/^(help|commands?|\?)$|\bwhat can you do\b|\bkya kar sakte\b|\bmadad\b|\bhelp\b/.test(t))return {type:'help'};
+  if(/\b(open|kholo|go|jao|back|wapas|return)\b.*\b(lab|hologram lab)\b|\b(close|band karo) (the )?assistant\b/.test(t))return {type:'lab'};
+  if(/\breset\b|\bdefault view\b/.test(t))return {type:'reset'};
+  if(/\b(explode|bikher\w*|deconstruct)\b/.test(t))return {type:'explode'};
+  if(/\b(assemble|reassemble)\b/.test(t))return {type:'assemble'};
+  if(/\bzoom\b/.test(t))return {type:'zoom',dir:/\b(out|kam|peeche|door|dur|piche)\b/.test(t)?'out':'in'};
+  if(/\b(rotat\w*|ghum\w*|spin)\b/.test(t))return {type:'rotate',on:!/\b(stop|band|ruko|off|pause|mat)\b/.test(t)};
+  if(/\blabels?\b/.test(t))return {type:'labels',dir:dirOf(t)};
+  if(/\b(wire\w*|intensity)\b/.test(t)){
+    const down=/\b(kam|less|low|lower|decrease|reduce|dim|dhima|down|reduce)\b/.test(t),up=/\b(zyada|jyada|more|high|higher|increase|badhao|bright\w*|up|boost)\b/.test(t);
+    return {type:'wire',dir:down&&!up?'down':up&&!down?'up':'?'};
+  }
+  if(/\b(colou?r|rang|theme)\b/.test(t)){
+    for(const [rx,i] of COLOR_MAP)if(rx.test(t))return {type:'color',idx:i};
+    return {type:'color',idx:-1};
+  }
+  for(const k in TOGGLES)if(TOGGLES[k].rx.test(t))return {type:'toggle',key:k,dir:dirOf(t)};
+  if(/\btour\b/.test(t))return {type:'tour'};
+  if(/\bburst\b/.test(t))return {type:'burst'};
+  if(/\b(system status|status|app state|kya chal raha)\b/.test(t))return {type:'status'};
+  if(/\b(explain|samjh\w*|describe|elaborate|what is|what's|kya hai|how does|kaise)\b/.test(t))
+    return {type:'explain',mode:/\b(detail\w*|vistar|deep|step by step|long)\b/.test(t)?'detailed':/\b(short|brief|chhota|sankshep|in short|tldr)\b/.test(t)?'short':'normal'};
+  if(/\b(summar\w*|tldr|sankshep)\b/.test(t))return {type:'summary'};
+  if(/\b(add|remove|delete|insert|attach|extend|replace|modify|change|make|increase|decrease|resize|enlarge|shrink|restructure|simplify|reduce|merge|split|rebuild|jodo|lagao|hatao|nikalo|badhao|badlo|badal)\b|\b(jod|laga|hata|nikal|bada|chhota) ?(do|de|karo)\b/.test(t))return {type:'edit',text:raw.trim()};
+  if(/\b(details?|components?|parts|breakdown|registry|list)\b/.test(t))return {type:'details'};
+  return {type:'chat',text:raw.trim()};
+}
+
+// ── local replies built from verified data ────────────────
+function noModel(){return 'No hologram is loaded yet, so there is nothing to work on. Create one with **⬡ NEW MODEL** in the lab (needs a Gemini or Groq key in **⚙ AI API**), then come back.';}
+function statusText(){
+  const a=appState(),f=facts(),p=a.aiProvider;let vault='n/a';try{vault=readMemories().length+' item(s)';}catch(e){}
+  let xr='n/a';try{xr='WebXR '+(XR.caps.webxr?'yes':'no')+' · AR '+(XR.caps.ar?'yes':'no')+' · VR '+(XR.caps.vr?'yes':'no');}catch(e){}
+  const fps=(($('tbFPS')||{}).textContent)||'?',q=localStorage.getItem('hololab_quality')||'(auto)';
+  return '**SYSTEM STATUS (read live from the app)**\n'+
+   '- Model: '+(f?esc0(f.subject)+' — '+f.totals.components+' components, '+f.totals.vertices+' vertices, '+f.totals.edges+' edges':'none loaded')+'\n'+
+   '- AI provider: '+(p==='demo'?'OFFLINE DEMO (no AI calls)':p.toUpperCase()+' · '+a.aiModel+' · key '+(a.keySaved?'saved':'MISSING'))+' · backup provider '+(a.backupProviderOn?'ON':'off')+'\n'+
+   '- Render: '+fps+' FPS · quality '+q+' · bloom '+(a.bloom?'on':'off')+' · reflection '+(a.reflection?'on':'off')+' · grid '+(a.grid?'on':'off')+' · stars '+(a.stars?'on':'off')+' · particles '+(a.particles?'on':'off')+'\n'+
+   '- Camera: auto-rotate '+(a.autoRotate?'on':'off')+' · tour '+(a.tour?'running':'off')+' · zoom '+a.zoomX+'×\n'+
+   '- Look: theme '+a.theme+' · labels '+(a.labelCount?(a.labelsVisible?'shown':'hidden')+' ('+a.labelCount+')':'none in this model')+' · wire intensity '+a.wireIntensityPct+'%\n'+
+   '- Memory Vault: '+vault+' · '+xr+'\n'+
+   '- Lab rendering is paused only while this page is open (scene kept in memory).';
+}
+function esc0(s){return String(s||'untitled');}
+function summaryText(){
+  const f=facts();if(!f)return noModel();
+  const names=f.objects.slice(0,8).map(o=>o.name).join(', ')+(f.objects.length>8?' … +'+(f.objects.length-8)+' more':'');
+  return '**VERIFIED SUMMARY — '+esc0(f.subject).toUpperCase()+'**\n'+
+   '- '+f.totals.components+' components: '+names+'\n'+
+   '- '+f.totals.vertices+' vertices · '+f.totals.edges+' edges\n'+
+   (f.bbox?'- Overall extent: '+f.bbox.size.join(' × ')+' model units (X × Y × Z)\n':'')+
+   '- Labels: '+(f.labels.length?f.labels.slice(0,8).join(', '):'none')+'\n\n'+
+   'Description stored with the model (written by the AI when it was generated):\n'+(f.description||'(none)');
+}
+function detailsHtml(){
+  const f=facts();if(!f)return null;
+  const rows=f.objects.slice(0,60).map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(o.name)+'</td><td>'+o.v+'</td><td>'+o.e+'</td><td>'+(o.size?esc(o.size.join('×')):'—')+'</td><td>'+esc(o.pos.join(', '))+'</td></tr>').join('');
+  return '<div><b>'+esc(String(f.subject).toUpperCase())+'</b> — '+f.totals.components+' components · '+f.totals.vertices+' vertices · '+f.totals.edges+' edges'+(f.bbox?' · extent '+esc(f.bbox.size.join('×')):'')+'</div>'+
+   '<div class="hla-tblwrap"><table class="hla-tbl"><tr><th>#</th><th>COMPONENT</th><th>V</th><th>E</th><th>SIZE</th><th>POSITION</th></tr>'+rows+'</table></div>'+
+   (f.objects.length>60?'<div>… '+(f.objects.length-60)+' more not shown</div>':'');
+}
+
+// ── AI layer: reuses existing keys / provider / model ─────
+const SYS_CHAT='You are the built-in assistant of HOLOLAB, a single-file Three.js holographic wireframe viewer. Reply in the same language/style as the user (Hinglish is fine). '+
+'You know ONLY what is in APP_STATE and MODEL_FACTS (both verified, computed locally from the live app). Units are arbitrary model units. '+
+'Never invent measurements, components, or capabilities. Keep verified data (names, counts, sizes) clearly separate from your interpretation: prefix guesses with "Interpretation:" or use words like "likely". '+
+'You cannot access files, the OS or other systems and you never see API keys. You cannot change the scene yourself in this reply; if the user asks for a change, say which command to type. '+
+'Supported commands: explain, short summary, show details, system status, zoom in/out, rotate/stop rotate, labels show/hide, colour (cyan/green/amber/red/violet/white/ice/orange), wireframe intensity up/down, bloom/grid/stars/particles/reflection on/off, explode, assemble, tour, reset hologram, add/remove/change model components (AI edit with preview), open lab. '+
+'Length: MODE short = max 3 sentences; normal = max 8 short lines; detailed = structured by component, max ~350 words. No markdown headings; use "-" bullets and **bold** sparingly.';
+const SYS_EDIT='You edit wireframe hologram models for HOLOLAB. Return ONE compact JSON object only (no prose, no markdown) with this schema: '+
+'{"summary":"one sentence describing the change","remove":["exact existing component name"],"replace":[COMPONENT],"add":[COMPONENT],"labels_add":[{"text":"UPPERCASE","position":[x,y,z]}],"labels_remove":["label text"]} '+
+'where COMPONENT={"name":"snake_case_name","vertices":[[x,y,z],...],"edges":[[i,j],...],"position":[0,0,0],"scale":[1,1,1],"glow":0.8}. '+
+'Rules: include only the changes needed and leave all other components untouched; "replace" regenerates an existing component by the same name; new components must use model-space coordinates that fit the given bounding box, with position [0,0,0] and scale [1,1,1]; '+
+'at most 150 vertices and 220 edges per component; every edge index must be valid; all coordinates within [-3.5,3.5]; use mirrored symmetric parts for wings, arms, legs; connected sensible topology; at most 6 added components. If the request cannot be done, return {"summary":"cannot do: <reason>","remove":[],"replace":[],"add":[]}.';
+function aiCfgOk(){
+  const p=provider();
+  if(p==='demo')return 'AI provider is set to **OFFLINE DEMO**, which makes no AI calls. Open **⚙ AI API** / **⬡ NEW MODEL** and choose Gemini or Groq.';
+  const other=p==='gemini'?'groq':'gemini';let fb=false;try{fb=getFallbackOn();}catch(e){}
+  if(!hasKey(p)&&!(fb&&hasKey(other)))return 'No **'+p.toUpperCase()+'** API key saved. Tap **⚙ AI API** (top right of this page) to add it — it is the same key the lab uses.';
+  return '';
+}
+function histMsgs(){return HLA.hist.slice(-2);}
+async function gemCall(system,user,o,signal,useHist){
+  const sel=o.model||getSelectedModel(),model=sel.startsWith('gemini-')?sel:DEFAULT_GEMINI_MODEL;
+  const contents=[];
+  if(useHist)histMsgs().forEach(h=>{contents.push({role:'user',parts:[{text:h.u}]});contents.push({role:'model',parts:[{text:h.a}]});});
+  contents.push({role:'user',parts:[{text:user}]});
+  const gc={maxOutputTokens:o.maxTokens,temperature:o.temp};if(o.json)gc.responseMimeType='application/json';
+  const data=await fetchJSONWithTimeout('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{
+    method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':getGeminiKey()},
+    body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents,generationConfig:gc})},o.timeout||_aiTimeoutMs,signal);
+  if(data.promptFeedback&&data.promptFeedback.blockReason)throw new Error('Gemini blocked the prompt: '+data.promptFeedback.blockReason);
+  const c=data.candidates&&data.candidates[0];
+  const txt=((c&&c.content&&c.content.parts)||[]).map(p=>p.text||'').join('');
+  if(c&&c.finishReason==='MAX_TOKENS'&&o.json)throw new Error('Gemini hit the output limit (incomplete JSON). Try a simpler change.');
+  if(!txt)throw new Error('Gemini returned an empty response');
+  return {text:txt,model,trunc:!!(c&&c.finishReason==='MAX_TOKENS')};
+}
+async function groqCall(system,user,o,signal,useHist){
+  const sel=o.model||getSelectedModel(),model=(!sel.startsWith('gemini-')&&sel!=='offline-demo')?sel:GROQ_MODEL_SECONDARY;
+  const messages=[{role:'system',content:system}];
+  if(useHist)histMsgs().forEach(h=>{messages.push({role:'user',content:h.u});messages.push({role:'assistant',content:h.a});});
+  messages.push({role:'user',content:user});
+  const data=await fetchJSONWithTimeout('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+getKey()},
+    body:JSON.stringify({model,max_tokens:o.maxTokens,temperature:o.temp,messages})},o.timeout||_aiTimeoutMs,signal);
+  const ch=data.choices&&data.choices[0];
+  if(ch&&ch.finish_reason==='length'&&o.json)throw new Error('Groq hit the output limit (incomplete JSON). Try a simpler change.');
+  const txt=(ch&&ch.message&&ch.message.content)||'';if(!txt)throw new Error('Groq returned an empty response');
+  return {text:txt,model,trunc:!!(ch&&ch.finish_reason==='length')};
+}
+async function aiCall(system,user,o,signal,useHist){
+  const r=await aiChain((p,m)=>(p==='gemini'?gemCall:groqCall)(system,user,Object.assign({},o,{model:m}),signal,useHist),signal);
+  r.provider=r._apiProvider;return r;
+}
+function userBlock(extra){
+  const f=facts();
+  const compact=f?{subject:f.subject,description:String(f.description).slice(0,400),totals:f.totals,bbox:f.bbox,
+    components:f.objects.map(o=>({name:o.name,v:o.v,e:o.e,pos:o.pos,scale:o.scale,size:o.size})),labels:f.labels}:null;
+  return 'APP_STATE: '+JSON.stringify(appState())+'\nMODEL_FACTS: '+(compact?JSON.stringify(compact):'no model loaded')+extra;
+}
+
+// ── chat / explain ────────────────────────────────────────
+async function runAI(kind,text,mode){
+  const bad=aiCfgOk();if(bad){addMsg('err','AI NOT AVAILABLE',bad);return;}
+  if(HLA.busy){addMsg('sys','BUSY','Previous AI request is still running. Wait for it or press ✕ CANCEL.');return;}
+  HLA.busy=true;const ctl=new AbortController();HLA.ctl=ctl;
+  setThinking(true,kind==='edit'?'DESIGNING EDIT…':'THINKING…');
+  const wait=addMsg('sys','WORKING','Contacting your selected AI provider…',{html:'<div>Contacting your selected AI provider…</div><div class="hla-btnrow"><button type="button" class="hla-act no" data-act="cancel">✕ CANCEL</button></div>'});
+  try{
+    if(kind==='edit')await runEdit(text,ctl.signal);
+    else{
+      const m=mode||'normal';
+      const r=await aiCall(SYS_CHAT,userBlock('\nMODE: '+m+'\nUSER: '+text.slice(0,600)),{maxTokens:Math.min(8000,getMaxTokens()),temp:0.3},ctl.signal,true);
+      const f=facts();
+      addMsg('ai','AI-GENERATED · '+r.provider.toUpperCase()+' · '+r.model,r.text+(r.trunc?'\n…(output limit reached)':''),
+        {note:f?'Verified from live scene: '+f.totals.components+' components · '+f.totals.vertices+' vertices · '+f.totals.edges+' edges. Descriptions/purpose above are AI interpretation.':'No model loaded; answer is general.'});
+      HLA.hist.push({u:text.slice(0,300),a:r.text.slice(0,300)});if(HLA.hist.length>4)HLA.hist.shift();
+    }
+  }catch(e){
+    if(e&&e.cancelled)addMsg('sys','CANCELLED','Request cancelled. Your hologram was not changed.');
+    else addMsg('err','AI REQUEST FAILED',red(e.message||e).slice(0,400)+'\n\nYour hologram was not changed.');
+  }finally{
+    HLA.busy=false;HLA.ctl=null;setThinking(false);if(wait&&wait.parentNode)wait.parentNode.removeChild(wait);updateChrome();
+  }
+}
+
+// ── AI model editing: patch → validate → preview → approve ─
+function extractJSON(txt){
+  txt=String(txt||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
+  const a=txt.indexOf('{'),b=txt.lastIndexOf('}');if(a<0||b<a)throw new Error('AI returned no JSON object');
+  return JSON.parse(txt.slice(a,b+1));
+}
+function relevantGeometry(instr){
+  const toks=String(instr).toLowerCase().split(/[^a-z0-9_]+/).filter(w=>w.length>=4);const out=[];
+  for(const o of S.objects){
+    const n=String(o.name||'').toLowerCase();
+    if(out.length<3&&o.vertices.length<=150&&toks.some(w=>n.includes(w)||w.includes(n.replace(/_?\d+$/,''))&&n.length>=4))
+      out.push({name:o.name,vertices:o.vertices.map(v=>v.map(r2)),edges:o.edges});
+  }
+  return out;
+}
+async function runEdit(instr,signal){
+  if(!S.objects||!S.objects.length){addMsg('err','NO MODEL',noModel());return;}
+  const base=S.objects,baseLabels=S.labels||[];
+  const extra='\nRELEVANT_GEOMETRY (full data only for components matching the request): '+JSON.stringify(relevantGeometry(instr))+'\nEDIT_INSTRUCTION: '+instr.slice(0,400);
+  const r=await aiCall(SYS_EDIT,userBlock(extra),{maxTokens:getMaxTokens(),temp:0.15,json:true,timeout:90000},signal,false);
+  const patch=extractJSON(r.text);
+  const v=validatePatch(patch,base,baseLabels);
+  if(!v.ok){addMsg('err','EDIT REJECTED — NOT APPLIED','Validation failed: '+v.error+'\n\nYour current hologram is unchanged.');return;}
+  showPreview(v,base,r);
+}
+function validatePatch(p,base,baseLabels){
+  const fail=m=>({ok:false,error:m});
+  if(!p||typeof p!=='object'||Array.isArray(p))return fail('AI reply is not a JSON object');
+  const arr=x=>Array.isArray(x)?x:[];
+  const summary=String(p.summary||'').slice(0,240);
+  if(/^cannot do/i.test(summary)&&!arr(p.add).length&&!arr(p.replace).length&&!arr(p.remove).length)return fail('AI says this change is not possible — '+summary);
+  const warn=[],byName=new Map();base.forEach((o,i)=>byName.set(String(o.name).trim().toLowerCase(),i));
+  const rm=new Set(),rmNames=[];
+  for(const n of arr(p.remove).slice(0,40)){
+    const k=String(n).trim().toLowerCase();
+    if(byName.has(k)){if(!rm.has(byName.get(k))){rm.add(byName.get(k));rmNames.push(base[byName.get(k)].name);}}else warn.push('unknown component to remove ignored: '+String(n).slice(0,40));
+  }
+  function checkComp(c,label){
+    if(!c||typeof c!=='object')throw new Error(label+': not an object');
+    if(!Array.isArray(c.vertices)||!Array.isArray(c.edges))throw new Error(label+': vertices/edges missing');
+    if(c.vertices.length>400||c.edges.length>800)throw new Error(label+': too large ('+c.vertices.length+' vertices / '+c.edges.length+' edges, max 400/800)');
+    const s=sanitizeModel({objects:[c]});
+    if(!s.objects.length)throw new Error(label+': invalid or empty geometry');
+    if(s._report.droppedV>0)throw new Error(label+': '+s._report.droppedV+' invalid vertices');
+    if(s._report.droppedE>Math.max(2,Math.floor(c.edges.length*0.1)))throw new Error(label+': too many invalid edges ('+s._report.droppedE+')');
+    if(s._report.droppedE)warn.push(label+': '+s._report.droppedE+' invalid edge(s) dropped');
+    const o=s.objects[0],b=worldBox(o);
+    if(!b||[...b.mn,...b.mx].some(x=>Math.abs(x)>6))throw new Error(label+': coordinates outside the allowed range (±6)');
+    return o;
+  }
+  const replaced=new Map(),added=[];
+  try{
+    for(const c of arr(p.replace).slice(0,8)){
+      const o=checkComp(c,'replace "'+String(c&&c.name).slice(0,30)+'"'),k=String(o.name).trim().toLowerCase();
+      if(byName.has(k)&&!rm.has(byName.get(k)))replaced.set(byName.get(k),o);
+      else{warn.push('"'+o.name+'" did not exist, added as new component');added.push(o);}
+    }
+    for(const c of arr(p.add).slice(0,8))added.push(checkComp(c,'add "'+String(c&&c.name).slice(0,30)+'"'));
+  }catch(e){return fail(e.message);}
+  const taken=new Set();
+  base.forEach((o,i)=>{if(!rm.has(i))taken.add(String(o.name).toLowerCase());});
+  for(const o of added){let n=String(o.name),k=n.toLowerCase(),c=2;while(taken.has(k)){n=o.name+'_'+c;k=n.toLowerCase();c++;}o.name=n;taken.add(k);}
+  const objects=[];base.forEach((o,i)=>{if(rm.has(i))return;objects.push(replaced.has(i)?replaced.get(i):o);});
+  added.forEach(o=>objects.push(o));
+  const repNames=[...replaced.keys()].map(i=>base[i].name);
+  if(!rmNames.length&&!replaced.size&&!added.length)return fail('AI returned no usable changes');
+  if(!objects.length)return fail('the edit would remove every component');
+  if(objects.length>40)return fail('too many components ('+objects.length+', max 40)');
+  const tv=objects.reduce((a,o)=>a+o.vertices.length,0);if(tv>8000)return fail('model would exceed 8000 vertices ('+tv+') — too heavy for low-memory devices');
+  // labels
+  let labels=baseLabels.map(l=>({text:l.text,position:l.position}));
+  const lr=new Set(arr(p.labels_remove).slice(0,30).map(x=>String(x).trim().toLowerCase()));
+  if(lr.size)labels=labels.filter(l=>!lr.has(String(l.text).trim().toLowerCase()));
+  for(const l of arr(p.labels_add).slice(0,10)){
+    const ok=l&&typeof l.text==='string'&&l.text.trim()&&Array.isArray(l.position)&&l.position.length>=3&&l.position.slice(0,3).every(x=>Number.isFinite(Number(x))&&Math.abs(Number(x))<=8);
+    if(ok)labels.push({text:l.text.trim().slice(0,40),position:l.position.slice(0,3).map(Number)});else warn.push('invalid label skipped');
+  }
+  return {ok:true,summary,warn,rmNames,repNames,addNames:added.map(o=>o.name),addedObjs:added,
+    revised:{subject:S.subject,description:S.description,objects,labels},
+    stats:{v:tv,e:objects.reduce((a,o)=>a+o.edges.length,0),n:objects.length}};
+}
+function showPreview(v,base,r){
+  discardPending(true);
+  const li=(cls,sign,arr,extra)=>arr.length?'<div class="'+cls+'">'+sign+' '+esc(extra)+': '+arr.map(esc).join(', ')+'</div>':'';
+  const addInfo=v.addedObjs.map(o=>o.name+' ('+o.vertices.length+'v/'+o.edges.length+'e)');
+  const html='<div>'+(v.summary?fmt(v.summary):'<div>Proposed change</div>')+'</div>'+
+   '<div class="hla-diff">'+li('add','＋',addInfo,'ADD')+li('rem','−',v.rmNames,'REMOVE')+li('rep','~',v.repNames,'REGENERATE')+
+   v.warn.map(w=>'<div class="warn">⚠ '+esc(w)+'</div>').join('')+'</div>'+
+   '<canvas class="hla-prev" width="380" height="212"></canvas>'+
+   '<div class="hla-diff"><span style="color:#7fdcff">■ unchanged</span> · <span class="add">■ new</span> · <span class="rem">■ removed</span><br>Result: '+v.stats.n+' components · '+v.stats.v+' vertices · '+v.stats.e+' edges</div>'+
+   '<div class="hla-btnrow"><button type="button" class="hla-act go" data-act="apply">✓ APPLY TO HOLOGRAM</button><button type="button" class="hla-act no" data-act="discard">✕ DISCARD</button></div>';
+  const node=addMsg('ai','EDIT PROPOSAL · '+r.provider.toUpperCase()+' · '+r.model,'',{html,note:'Geometry validated locally (indices, ranges, size). The AI wrote the proposal; your current hologram is unchanged until you press APPLY.'});
+  HLA.pending={node,base,revised:v.revised,added:new Set(v.addNames.concat(v.repNames)),removed:new Set(v.rmNames.concat(v.repNames)),baseObjs:base,cv:node.querySelector('canvas'),stats:v.stats,addNames:v.addNames,rmNames:v.rmNames,repNames:v.repNames};
+  startPreview();
+}
+function discardPending(silent){
+  const p=HLA.pending;if(!p)return;
+  HLA.pending=null;HLA.prevOn=false;if(HLA.prevT){clearTimeout(HLA.prevT);HLA.prevT=0;}
+  if(p.node){p.node.querySelectorAll('button[data-act]').forEach(b=>{b.disabled=true;});}
+  if(!silent)addMsg('sys','DISCARDED','Edit discarded. Your hologram was not changed.');
+}
+function applyPending(){
+  const p=HLA.pending;if(!p){addMsg('sys','NOTHING PENDING','There is no pending edit to apply.');return;}
+  if(S.objects!==p.baseObjs){discardPending(true);addMsg('err','NOT APPLIED','The hologram changed after this proposal was made, so applying it could overwrite newer work. Ask for the edit again.');return;}
+  const snap={subject:S.subject,description:S.description,objects:S.objects,labels:S.labels};
+  const expect=p.revised.objects.length,_sp=window.speak;
+  try{
+    window.speak=function(){};                       // no voice chatter for assistant edits
+    loadData(p.revised);                             // throws + restores previous scene on failure
+    if(!S.holoGroup||S.objects.length!==expect)throw new Error('scene verification failed');
+  }catch(e){
+    window.speak=_sp;
+    addMsg('err','EDIT FAILED — NOT APPLIED','Reason: '+red(e.message||e).slice(0,300)+'\nYour previous hologram is still in place.');
+    return;
+  }
+  window.speak=_sp;
+  HLA.undo=snap;HLA.redo=null;
+  discardPending(true);reapply();
+  const msg=addMsg('act','EDIT APPLIED','Hologram updated and verified: **'+S.objects.length+' components**'+
+    (p.addNames.length?' · added '+p.addNames.map(esc0).join(', '):'')+(p.rmNames.length?' · removed '+p.rmNames.join(', '):'')+(p.repNames.length?' · regenerated '+p.repNames.join(', '):'')+'.',
+    {html:fmt('Hologram updated and verified: **'+S.objects.length+' components**'+(p.addNames.length?'\nAdded: '+p.addNames.join(', '):'')+(p.rmNames.length?'\nRemoved: '+p.rmNames.join(', '):'')+(p.repNames.length?'\nRegenerated: '+p.repNames.join(', '):''))+
+    '<div class="hla-btnrow"><button type="button" class="hla-act no" data-act="undo">↶ UNDO THIS EDIT</button></div>'});
+  setTimeout(()=>{try{saveGeneratedMemory({subject:S.subject,description:S.description,color:S.colorHex,objects:S.objects,labels:S.labels},provider(),'assistant-edit');}catch(e){}},0);
+  updateChrome();
+}
+function currentSnapshot(){return {subject:S.subject,description:S.description,objects:S.objects,labels:S.labels};}
+function restoreSnapshot(snap,kind){
+  if(!snap) return false;
+  const before=currentSnapshot(),_sp=window.speak;
+  try{window.speak=function(){};loadData(snap);if(!S.holoGroup||!S.objects.length)throw new Error('scene verification failed');}
+  catch(e){window.speak=_sp;addMsg('err',kind+' FAILED',red(e&&e.message||e).slice(0,220)+'\\nThe previous hologram remains in place.');return false;}
+  window.speak=_sp;
+  if(kind==='UNDONE'){HLA.redo=before;HLA.undo=null;}
+  else if(kind==='REDONE'){HLA.undo=before;HLA.redo=null;}
+  reapply();updateChrome();
+  addMsg('act',kind, 'Model restored and verified ('+S.objects.length+' components).');
+  return true;
+}
+function undoEdit(btn){
+  if(!HLA.undo){addMsg('sys','NO UNDO','Nothing to undo yet. Apply a successful AI model edit first.');return;}
+  restoreSnapshot(HLA.undo,'UNDONE');
+}
+function redoEdit(){
+  if(!HLA.redo){addMsg('sys','NO REDO','There is no undone AI edit to redo.');return;}
+  restoreSnapshot(HLA.redo,'REDONE');
+}
+function refreshGuardian(){
+  const el=$('hlaPerfCard');if(!el)return;
+  const f=facts(),fps=(($('tbFPS')||{}).textContent||'not exposed').trim();
+  let quality='auto';try{quality=localStorage.getItem('hololab_quality')||'auto';}catch(e){}
+  el.innerHTML='<b>FPS:</b> '+esc(fps||'not exposed')+'<br><b>QUALITY:</b> '+esc(quality)+
+    '<br><b>OBJECTS:</b> '+(S.holoGroup?S.holoGroup.children.length:0)+
+    '<br><b>MODEL PARTS:</b> '+(f?f.totals.components:0)+
+    '<br><b>GEOMETRY:</b> '+(f?f.totals.vertices+' vertices · '+f.totals.edges+' edges':'no model')+
+    '<br><b>RENDERER:</b> '+((typeof renderer!=='undefined'&&renderer)?'active':'not detected')+
+    '<br><b>MODE:</b> '+(HLA.open?'assistant open · lab rendering paused':'lab mode')+
+    '<div style="opacity:.65;margin-top:5px">Metrics shown only when exposed by the existing app; no OS/RAM access.</div>';
+}
+// lightweight 2D preview (no extra WebGL context → safe for 4 GB RAM)
+function drawPreview(p,t){
+  const cv=p.cv;if(!cv||!cv.isConnected)return false;
+  const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  ctx.fillStyle='#050318';ctx.fillRect(0,0,W,H);
+  const rev=p.revised.objects,base=p.baseObjs;
+  let m=0.001;[base,rev].forEach(l=>l.forEach(o=>{const b=worldBox(o);if(b)for(let k=0;k<3;k++)m=Math.max(m,Math.abs(b.mn[k]),Math.abs(b.mx[k]));}));
+  const sc=Math.min(W,H)*0.42/m,cy=Math.cos(t),sy=Math.sin(t),cp=Math.cos(.35),sp=Math.sin(.35);
+  const proj=(o,v)=>{const q=o.position||[0,0,0],s=o.scale||[1,1,1];const x=q[0]+s[0]*v[0],y=q[1]+s[1]*v[1],z=q[2]+s[2]*v[2];const x1=x*cy-z*sy,z1=x*sy+z*cy,y1=y*cp-z1*sp;return [W/2+x1*sc,H/2-y1*sc];};
+  const lists=[[base.filter(o=>p.removed.has(o.name)),'#ff5c7a',.55],[rev.filter(o=>!p.added.has(o.name)),'#7fdcff',.6],[rev.filter(o=>p.added.has(o.name)),'#ff4fd8',.95]];
+  let total=0;lists.forEach(l=>l[0].forEach(o=>total+=o.edges.length));const stride=Math.max(1,Math.ceil(total/7000));
+  ctx.lineWidth=1;
+  for(const [list,col,al] of lists){
+    ctx.strokeStyle=col;ctx.globalAlpha=al;ctx.beginPath();
+    list.forEach(o=>{const vs=o.vertices;for(let i=0;i<o.edges.length;i+=stride){const e=o.edges[i],a=vs[e[0]],b=vs[e[1]];if(!a||!b)continue;const A=proj(o,a),B=proj(o,b);ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);}});
+    ctx.stroke();
+  }
+  ctx.globalAlpha=1;return true;
+}
+function startPreview(){
+  if(HLA.prevOn||!HLA.pending)return;HLA.prevOn=true;
+  const loop=()=>{
+    if(!HLA.prevOn||!HLA.open||!HLA.pending){HLA.prevOn=false;HLA.prevT=0;return;}
+    try{if(!drawPreview(HLA.pending,performance.now()/1800)){HLA.prevOn=false;return;}}catch(e){HLA.prevOn=false;return;}
+    HLA.prevT=setTimeout(loop,60);
+  };loop();
+}
+
+// ── command execution ─────────────────────────────────────
+function act(text){addMsg('act','LOCAL COMMAND · EXECUTED',text);updateChrome();}
+function fail(text){addMsg('err','COMMAND FAILED',text);}
+function needModel(){if(!S.objects||!S.objects.length||!S.holoGroup){addMsg('err','NO HOLOGRAM',noModel());return true;}return false;}
+function exec(cmd,raw){
+  try{
+  switch(cmd.type){
+    case 'help':addMsg('sys','HELP',HELP);return;
+    case 'refuse-key':addMsg('sys','PROTECTED','I never display, log, or send API keys. They stay in this browser\'s local storage; manage them via **⚙ AI API**.');return;
+    case 'refuse-os':addMsg('sys','OUT OF SCOPE','I can\'t access your files, folders, OS or other systems. I only see HOLOLAB\'s live scene and settings.');return;
+    case 'lab':closeAssistant();return;
+    case 'reset':if(needModel()){return;}resetAll();act('Hologram reset: camera, labels, wire intensity, auto-rotate and assembly restored to defaults. Model kept ('+S.objects.length+' components).');return;
+    case 'explode':if(needModel())return;trigExplode();act('Explode sequence started. Say **assemble** to bring the parts back.');return;
+    case 'assemble':if(needModel())return;trigAssemble();act('Assemble sequence started.');return;
+    case 'zoom':{stopTourIfAny();const f=cmd.dir==='in'?0.75:1.33,r=Math.max(2,Math.min(30,S.camRadius*f));S.camRadius=r;const z=$('lpZoom');if(z)z.textContent=(9/r).toFixed(1)+'×';act('Zoom '+cmd.dir+' → '+r2(9/r)+'× (camera distance '+r2(r)+').');return;}
+    case 'rotate':stopTourIfAny();S.autoRotate=cmd.on;setRotBtn();act('Auto-rotate is now **'+(S.autoRotate?'ON':'OFF')+'** (camera orbit).');return;
+    case 'labels':{
+      if(needModel())return;
+      if(!labelCount()){act('This model has no labels, so there is nothing to show or hide.');return;}
+      HLA.labelsVisible=cmd.dir==='toggle'?!HLA.labelsVisible:cmd.dir==='on';applyLabels();
+      act('Labels are now **'+(HLA.labelsVisible?'SHOWN':'HIDDEN')+'** ('+visibleLabelCount()+' of '+labelCount()+' visible).');return;}
+    case 'wire':{
+      if(cmd.dir==='?'){addMsg('sys','CLARIFY','Say `wireframe intensity kam` (lower) or `wireframe intensity zyada` (higher). Current: '+HLA.wirePct+'%.');return;}
+      if(needModel())return;
+      HLA.wirePct=Math.max(20,Math.min(120,HLA.wirePct+(cmd.dir==='up'?20:-20)));applyWire();
+      act('Wireframe line intensity is now **'+HLA.wirePct+'%** (affects the wire lines only; glow/bloom unchanged).');return;}
+    case 'color':{
+      if(cmd.idx<0){const n=(S.themeIdx+1)%THEMES.length;const t=applyThemeIdx(n);act('Theme changed to **'+t.n+'** ('+t.hex+'). Tell me a colour (cyan, green, amber, red, violet, white, ice/blue, orange) to pick one.');return;}
+      const t=applyThemeIdx(cmd.idx);
+      if(S.colorHex!==t.hex){fail('Theme did not apply.');return;}
+      const near=/\bblue\b/.test(raw.toLowerCase())&&t.n==='ICE'?' (closest preset to blue is ICE)':'';
+      act('Hologram colour theme set to **'+t.n+'** ('+t.hex+')'+near+'. The model was rebuilt in this colour.');return;}
+    case 'toggle':{
+      const T=TOGGLES[cmd.key],cur=!!T.get(),want=cmd.dir==='toggle'?!cur:cmd.dir==='on';
+      if(cur!==want)T.fn();
+      act(T.n+' is now **'+(T.get()?'ON':'OFF')+'**.');return;}
+    case 'tour':if(needModel())return;startTour();act('Cinematic tour is now **'+(S.tourActive?'RUNNING':'STOPPED')+'**.');return;
+    case 'burst':trigEnergyBurst();act('Energy burst triggered.');return;
+    case 'status':addMsg('sys','VERIFIED · SYSTEM STATUS',statusText());return;
+    case 'summary':{const f=facts();if(!f){addMsg('err','NO HOLOGRAM',noModel());return;}addMsg('sys','VERIFIED DATA · SUMMARY',summaryText(),{note:'Counts, names and sizes are computed from the live scene. The description line was AI-written at generation time.'});return;}
+    case 'details':{const h=detailsHtml();if(!h){addMsg('err','NO HOLOGRAM',noModel());return;}addMsg('sys','VERIFIED DATA · COMPONENTS','',{html:h,note:'Sizes are in arbitrary model units, computed from vertex bounds × component scale.'});return;}
+    case 'explain':if(!facts()){addMsg('err','NO HOLOGRAM',noModel());return;}runAI('explain','Explain the currently displayed hologram: purpose, structure, main components and visible features.'+(raw.length<200?' User said: '+raw:''),cmd.mode);return;
+    case 'edit':if(!facts()){addMsg('err','NO HOLOGRAM',noModel());return;}runAI('edit',cmd.text);return;
+    case 'chat':runAI('chat',cmd.text,'normal');return;
+  }
+  }catch(e){fail(red(e&&e.message||e).slice(0,300)+'\nThe hologram stayed visible; nothing was broken.');}
+}
+function send(text){
+  text=String(text==null?$('hlaInput').value:text).trim();if(!text)return;
+  const now=Date.now();if(text===HLA.lastText&&now-HLA.lastTextT<700)return;HLA.lastText=text;HLA.lastTextT=now;
+  $('hlaInput').value='';
+  addMsg('user','YOU','',{html:'<div>'+esc(text)+'</div>'});
+  exec(parse(text),text);
+}
+
+// ── wiring ────────────────────────────────────────────────
+const HINTS=['Is hologram ko explain karo','Iska short summary do','Is model mein wings add karo','Extra components remove karo','Hologram ka colour cyan karo','Model ko rotate karo','Zoom in karo','Labels hide karo','Wireframe intensity kam karo','Reset hologram'];
+function init(){
+  const hints=$('hlaHints');if(hints)HINTS.forEach(h=>{const b=document.createElement('button');b.type='button';b.className='hla-hint';b.textContent=h;b.onclick=()=>send(h);hints.appendChild(b);});
+  document.querySelectorAll('#hlaPage .hla-qbtn').forEach(b=>b.addEventListener('click',()=>send(b.getAttribute('data-q'))));
+  $('hlaForm').addEventListener('submit',e=>{e.preventDefault();send();});
+  $('hlaInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send();}});
+  $('hlaOpenLab').addEventListener('click',closeAssistant);
+  $('hlaCloseBtn').addEventListener('click',closeAssistant);
+  $('hlaApiBtn').addEventListener('click',()=>{try{openKey();}catch(e){}});
+  $('hlaClearBtn').addEventListener('click',()=>{if(HLA.ctl)try{HLA.ctl.abort();}catch(e){}discardPending(true);HLA.hist=[];$('hlaLog').innerHTML='';welcome();});
+  $('hlaLog').addEventListener('click',e=>{
+    const b=e.target.closest&&e.target.closest('button[data-act]');if(!b||b.disabled)return;
+    const a=b.getAttribute('data-act');
+    if(a==='apply')applyPending();else if(a==='discard')discardPending(false);else if(a==='undo')undoEdit(b);
+    else if(a==='cancel'){if(HLA.ctl)try{HLA.ctl.abort();}catch(x){}}
+  });
+  const inspectBtn=$('hlaInspectBtn');if(inspectBtn)inspectBtn.addEventListener('click',()=>{const h=detailsHtml();if(!h){addMsg('err','NO HOLOGRAM',noModel());return;}addMsg('sys','MODEL INSPECTOR · VERIFIED DATA','',{html:h,note:'Component names, counts and bounds are read from the current model data.'});});
+  const undoBtn=$('hlaUndoBtn');if(undoBtn)undoBtn.addEventListener('click',()=>undoEdit(undoBtn));
+  const redoBtn=$('hlaRedoBtn');if(redoBtn)redoBtn.addEventListener('click',redoEdit);
+  const perfBtn=$('hlaPerfBtn');if(perfBtn)perfBtn.addEventListener('click',()=>{refreshGuardian();addMsg('sys','PERFORMANCE GUARDIAN · LIVE APP METRICS','Metrics refreshed from the existing application. No operating-system or hardware-memory access is performed.');});
+  // keep lab hotkeys (r, n, s, e …) from firing while typing/clicking inside the assistant
+  $('hlaPage').addEventListener('keydown',e=>{if(e.key==='Escape'){closeAssistant();}e.stopPropagation();});
+  document.addEventListener('keydown',e=>{
+    if(!HLA.open)return;
+    const km=$('keyModal'),mm=$('memoryModal');
+    if((km&&km.style.display==='flex')||(mm&&mm.style.display==='flex'))return; // let those dialogs handle keys
+    if(!$('hlaPage').contains(e.target)){e.stopPropagation();if(e.key==='Escape')closeAssistant();}
+  },true);
+  syncAssistantModelUI();
+  welcome();
+}
+function welcome(){
+  const f=facts(),p=provider();
+  addMsg('sys','HOLOLAB AI ASSISTANT · ONLINE',
+   'I\'m the built-in assistant of this lab. I can **explain** the current hologram, **control** the scene, and **propose edits** that you approve before anything changes.\n\n'+
+   (f?'Loaded: **'+esc0(f.subject)+'** — '+f.totals.components+' components.':'No hologram is loaded yet — generate one with ⬡ NEW MODEL first.')+'\n'+
+   'Type `help` for the full command list. Messages marked **VERIFIED** come from live app data; **AI-GENERATED** messages are interpretation.',
+   {note:'Provider: '+(p==='demo'?'OFFLINE DEMO':p.toUpperCase())+' · Same keys/settings as the lab.'});
+}
+
+// ── V14 MODEL FORGE: lightweight editor over the existing model data ──
+function openModelForge(){
+ const modal=document.getElementById('mfModal');if(!modal)return;
+ modal.classList.add('open');mfRefreshList();
+ if(S.objects&&S.objects.length){if(S.selObj==null||S.selObj<0||S.selObj>=S.objects.length)S.selObj=0;document.getElementById('mfObject').value=String(S.selObj);mfLoadSelected();}
+ else{document.getElementById('mfStatus').textContent='No model loaded. Use NEW MODEL first, or add a primitive to start a simple scene.';}
+}
+function closeModelForge(){document.getElementById('mfModal')?.classList.remove('open')}
+function mfStatus(t){const el=document.getElementById('mfStatus');if(el)el.textContent=t;}
+function mfRefreshList(){const sel=document.getElementById('mfObject');if(!sel)return;sel.innerHTML='';(S.objects||[]).forEach((o,i)=>{const op=document.createElement('option');op.value=String(i);op.textContent=(i+1)+'. '+String(o.name||('component_'+i)).slice(0,50);sel.appendChild(op);});if(!S.objects||!S.objects.length){const op=document.createElement('option');op.value='';op.textContent='No components';sel.appendChild(op);}}
+function mfNum(id,def){const v=Number(document.getElementById(id)?.value);return Number.isFinite(v)?v:def;}
+function mfLoadSelected(){const i=Number(document.getElementById('mfObject')?.value),o=S.objects?.[i];if(!o)return;S.selObj=i;
+ document.getElementById('mfName').value=o.name||('component_'+i);const p=o.position||[0,0,0],sc=o.scale||[1,1,1];
+ ['X','Y','Z'].forEach((a,j)=>{document.getElementById('mfP'+a).value=Number(p[j]??0);document.getElementById('mfS'+a).value=Number(sc[j]??1)});
+ let color=o.material?.color||S.colorHex||'#65f7ff';try{if(/^0x[0-9a-f]+$/i.test(color))color='#'+Number(color).toString(16).padStart(6,'0');if(!String(color).startsWith('#'))color='#'+String(color).replace(/^#/,'').padStart(6,'0');document.getElementById('mfColor').value=color.slice(0,7)}catch(e){document.getElementById('mfColor').value='#65f7ff'}
+ document.getElementById('mfGlow').value=Number(o.glow??0.8);document.getElementById('mfInfo').value=(o.vertices||[]).length+' V / '+(o.edges||[]).length+' E';
+ if(S.holoGroup?.children?.[i])highlightObj(i);
+}
+function mfRebuild(msg){try{buildHolo(S.objects,S.labels||[]);updatePanels();mfRefreshList();const sel=document.getElementById('mfObject');if(sel&&S.objects.length){sel.value=String(Math.max(0,Math.min(S.selObj||0,S.objects.length-1)));mfLoadSelected();}if(typeof addDS==='function')addDS('[MODEL FORGE] '+msg);if(typeof notify==='function')notify('MODEL FORGE · '+msg);mfStatus(msg+'\n'+S.objects.length+' component(s) in current scene.');return true;}catch(e){mfStatus('Could not rebuild scene: '+(e.message||e));return false}}
+function mfApply(){const i=Number(document.getElementById('mfObject').value),o=S.objects?.[i];if(!o){mfStatus('Select a component first.');return}
+ const name=document.getElementById('mfName').value.trim().replace(/[<>]/g,'').slice(0,60);if(name)o.name=name;
+ o.position=['X','Y','Z'].map((a,j)=>Math.max(-50,Math.min(50,mfNum('mfP'+a,(o.position||[0,0,0])[j]))));
+ o.scale=['X','Y','Z'].map((a,j)=>Math.max(.05,Math.min(10,mfNum('mfS'+a,(o.scale||[1,1,1])[j]))));
+ o.material=o.material||{};o.material.color=document.getElementById('mfColor').value;o.glow=Math.max(0,Math.min(2,mfNum('mfGlow',.8)));S.selObj=i;mfRebuild('APPLIED '+o.name);}
+function mfAddPrimitive(type){
+ if((S.objects||[]).length>=80){mfStatus('Safety limit: 80 components per scene on this lightweight build.');return}
+ let vertices=[],edges=[],name='';
+ if(type==='box'){name='forge_box';vertices=[[-.5,-.5,-.5],[.5,-.5,-.5],[.5,.5,-.5],[-.5,.5,-.5],[-.5,-.5,.5],[.5,-.5,.5],[.5,.5,.5],[-.5,.5,.5]];edges=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];}
+ else if(type==='pyramid'){name='forge_pyramid';vertices=[[0,.8,0],[-.6,-.5,-.6],[.6,-.5,-.6],[.6,-.5,.6],[-.6,-.5,.6]];edges=[[0,1],[0,2],[0,3],[0,4],[1,2],[2,3],[3,4],[4,1]];}
+ else{name='forge_ring';for(let j=0;j<32;j++){const a=j/32*Math.PI*2;vertices.push([Math.cos(a)*.7,0,Math.sin(a)*.7]);edges.push([j,(j+1)%32]);}}
+ const o={name:name+'_'+(S.objects.length+1),vertices,edges,position:[0,0,0],scale:[1,1,1],glow:.8,material:{color:document.getElementById('mfColor')?.value||S.colorHex||'#65f7ff'}};
+ S.objects.push(o);S.selObj=S.objects.length-1;mfRebuild('ADDED '+o.name);
+}
+function mfDuplicate(){const i=Number(document.getElementById('mfObject').value),o=S.objects?.[i];if(!o)return;if(S.objects.length>=80){mfStatus('Safety limit: 80 components per scene.');return}const c=JSON.parse(JSON.stringify(o));c.name=(o.name||'component')+'_copy';c.position=(o.position||[0,0,0]).map((v,j)=>v+(j===0?.35:0));S.objects.push(c);S.selObj=S.objects.length-1;mfRebuild('DUPLICATED '+c.name)}
+function mfDelete(){const i=Number(document.getElementById('mfObject').value);if(!S.objects?.[i])return;if(!confirm('Delete '+(S.objects[i].name||'this component')+'?'))return;const name=S.objects[i].name;S.objects.splice(i,1);S.selObj=Math.max(0,Math.min(i,S.objects.length-1));if(!S.objects.length){S.subject='EMPTY SCENE';S.description='';if(S.holoGroup){scene.remove(S.holoGroup);S.holoGroup=null;}updatePanels();mfRefreshList();mfStatus('Deleted '+name+'. Scene is now empty; add a primitive or generate a model.');return}mfRebuild('DELETED '+name)}
+function mfPayload(){return {subject:S.subject||'HOLOLAB SCENE',description:S.description||'',objects:S.objects||[],labels:S.labels||[],version:'HOLOLAB-MODEL-FORGE-1',savedAt:new Date().toISOString()}}
+function mfSaveLocal(){try{localStorage.setItem('hololab_model_forge_scene',JSON.stringify(mfPayload()));mfStatus('Scene saved in this browser profile. This is local-only storage, not cloud sync.')}catch(e){mfStatus('Save failed: browser storage may be full. '+e.message)}}
+function mfLoadLocal(){try{const raw=localStorage.getItem('hololab_model_forge_scene');if(!raw){mfStatus('No browser save found yet.');return}const data=JSON.parse(raw);loadData(data);S.selObj=0;mfRefreshList();if(S.objects.length){document.getElementById('mfObject').value='0';mfLoadSelected()}mfStatus('Loaded local scene: '+S.subject)}catch(e){mfStatus('Could not load saved scene: '+e.message)}}
+function mfDownload(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function mfExport(){try{mfDownload(mfPayload(),'hololab-scene-'+Date.now()+'.json');mfStatus('Scene JSON export started. Keep this file as a backup.')}catch(e){mfStatus('Export failed: '+e.message)}}
+function mfImport(ev){const f=ev.target.files?.[0];if(!f)return;if(f.size>5*1024*1024){mfStatus('Import blocked: file is larger than 5 MB.');ev.target.value='';return}const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(String(r.result||''));const clean=sanitizeModel(data);if(!clean.objects.length)throw new Error('No valid model components found');if(!confirm('Replace the current scene with '+clean.objects.length+' imported components? Export a backup first if needed.'))return;loadData(clean);S.selObj=0;mfRefreshList();document.getElementById('mfObject').value='0';mfLoadSelected();mfStatus('Imported '+clean.objects.length+' component(s) from '+f.name)}catch(e){mfStatus('Import failed: '+e.message)}finally{ev.target.value=''}};r.onerror=()=>mfStatus('Could not read selected file.');r.readAsText(f)}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModelForge()});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+<!-- IRON LAB MASTER additive module: delete this block and the iron-lab-master script to revert -->
+<style id="iron-lab-style">
+#ilToggle{position:fixed;top:68px;left:250px;z-index:26;font:600 10px 'Share Tech Mono',monospace;letter-spacing:1.5px;color:#9ffaff;background:rgba(0,10,28,.88);border:1px solid rgba(0,225,255,.45);padding:8px 12px;cursor:pointer;border-radius:3px}
+#ilToggle:focus-visible,#ilPanel button:focus-visible,#ilPanel input:focus-visible,#ilPanel select:focus-visible{outline:2px solid #ffd36b;outline-offset:1px}
+#ilPanel{position:fixed;top:104px;left:250px;z-index:26;width:292px;max-height:calc(100vh - 190px);overflow:auto;display:none;background:rgba(0,6,20,.93);border:1px solid rgba(0,225,255,.35);border-radius:4px;padding:10px 12px 12px;color:#bfefff;font:11px 'Share Tech Mono',monospace;letter-spacing:.6px;scrollbar-width:thin}
+#ilPanel.open{display:block}
+#ilPanel h4{margin:10px 0 5px;font:700 9px 'Orbitron',monospace;letter-spacing:2px;color:#00e1ff;border-bottom:1px solid rgba(0,225,255,.2);padding-bottom:3px}
+#ilPanel h4:first-child{margin-top:0}
+.il-row{display:flex;gap:5px;align-items:center;margin:4px 0;flex-wrap:wrap}
+.il-row label{flex:0 0 62px;color:#7fb8c8;font-size:10px}
+.il-row input[type=range]{flex:1;min-width:80px;accent-color:#00e1ff}
+.il-row input[type=number]{width:54px;background:#020b1c;color:#bfefff;border:1px solid rgba(0,225,255,.3);padding:3px;font:inherit}
+.il-row input[type=text],.il-row select{flex:1;min-width:0;background:#020b1c;color:#bfefff;border:1px solid rgba(0,225,255,.3);padding:4px;font:inherit}
+.il-b{flex:1;min-width:58px;background:rgba(0,225,255,.07);color:#9ffaff;border:1px solid rgba(0,225,255,.4);padding:6px 4px;font:inherit;font-size:10px;cursor:pointer;border-radius:2px}
+.il-b:hover{background:rgba(0,225,255,.18)}
+.il-b.on{background:rgba(0,225,255,.28);border-color:#00ffff;color:#fff}
+#ilRead,#ilLog{background:#020b1c;border:1px solid rgba(0,225,255,.18);padding:6px;line-height:1.5;color:#8fd8e8;font-size:10px;white-space:pre-wrap;word-break:break-word}
+#ilLog{max-height:84px;overflow:auto}
+@media(max-width:820px){#ilToggle{left:8px;top:64px}#ilPanel{left:8px;right:8px;width:auto;top:100px;max-height:calc(100vh - 180px)}}
+@media(prefers-reduced-motion:reduce){#ilPanel *{transition:none!important;animation:none!important}}
+</style>
+<button id="ilToggle" type="button" aria-expanded="false" aria-controls="ilPanel">◈ IRON LAB</button>
+<div id="ilPanel" role="region" aria-label="Iron Lab engineering controls">
+  <h4>RENDER MODE</h4>
+  <div class="il-row">
+    <button class="il-b on" type="button" data-ilmode="holo">HOLOGRAM</button>
+    <button class="il-b" type="button" data-ilmode="blueprint">BLUEPRINT</button>
+    <button class="il-b" type="button" data-ilmode="solid">SOLID+WIRE</button>
+  </div>
+  <div class="il-row"><label for="ilOp">OPACITY</label><input id="ilOp" type="range" min="15" max="100" value="100"></div>
+  <div class="il-row"><label for="ilGlow">GLOW</label><input id="ilGlow" type="range" min="0" max="250" value="100"></div>
+  <div class="il-row"><label for="ilColor">COLOR</label><input id="ilColor" type="color" value="#00ffff" aria-label="Hologram colour (selected object, or all if none selected)"><button class="il-b" type="button" id="ilColorAll">APPLY ALL</button></div>
+  <h4>SELECTED OBJECT</h4>
+  <div class="il-row"><label for="ilSel">OBJECT</label><select id="ilSel"></select></div>
+  <div class="il-row"><button class="il-b" type="button" id="ilFocus">FOCUS</button><button class="il-b" type="button" id="ilView">DEFAULT VIEW</button><button class="il-b" type="button" id="ilVis">HIDE/SHOW</button></div>
+  <div class="il-row"><label>POS XYZ</label><input id="ilPx" type="number" step="0.1" aria-label="Position X"><input id="ilPy" type="number" step="0.1" aria-label="Position Y"><input id="ilPz" type="number" step="0.1" aria-label="Position Z"></div>
+  <div class="il-row"><label>ROT ° (live)</label><input id="ilRx" type="number" step="5" aria-label="Rotation X degrees"><input id="ilRy" type="number" step="5" aria-label="Rotation Y degrees"><input id="ilRz" type="number" step="5" aria-label="Rotation Z degrees"></div>
+  <div class="il-row"><label>SCALE XYZ</label><input id="ilSx" type="number" step="0.1" min="0.05" aria-label="Scale X"><input id="ilSy" type="number" step="0.1" min="0.05" aria-label="Scale Y"><input id="ilSz" type="number" step="0.1" min="0.05" aria-label="Scale Z"></div>
+  <div id="ilRead" aria-live="polite">No model loaded.</div>
+  <h4>OVERLAYS</h4>
+  <div class="il-row">
+    <button class="il-b on" type="button" data-ilov="box">BOUNDS</button>
+    <button class="il-b on" type="button" data-ilov="rings">RINGS</button>
+    <button class="il-b" type="button" data-ilov="axes">AXES</button>
+  </div>
+  <h4>EXPLODED VIEW</h4>
+  <div class="il-row"><label for="ilExp">AMOUNT</label><input id="ilExp" type="range" min="0" max="150" value="60"></div>
+  <div class="il-row"><button class="il-b" type="button" id="ilExplode">EXPLODE</button><button class="il-b" type="button" id="ilAssemble">ASSEMBLE</button></div>
+  <h4>QUALITY</h4>
+  <div class="il-row">
+    <button class="il-b" type="button" data-ilq="performance">LOW</button>
+    <button class="il-b" type="button" data-ilq="balanced">BALANCED</button>
+    <button class="il-b" type="button" data-ilq="ultra">HIGH</button>
+  </div>
+  <h4>PROJECT SAVE / RESTORE</h4>
+  <div class="il-row"><button class="il-b" type="button" id="ilSaveProject">SAVE LOCAL</button><button class="il-b" type="button" id="ilRestoreProject">RESTORE</button></div>
+  <div class="il-row"><button class="il-b" type="button" id="ilExportProject">EXPORT JSON</button><button class="il-b" type="button" id="ilImportProject">IMPORT JSON</button><input id="ilProjectFile" type="file" accept="application/json,.json" hidden></div>
+  <div id="ilProjectStatus" style="font-size:9px;color:#7fb8c8;line-height:1.5;margin:4px 0">Scene, camera and quality settings save locally in this browser.</div>
+  <h4>LOCAL COMMANDS</h4>
+  <div class="il-row"><input id="ilCmd" type="text" placeholder="blueprint · explode · color cyan · bigger" aria-label="Scene command" autocomplete="off"><button class="il-b" type="button" id="ilRun" style="flex:0 0 46px">RUN</button></div>
+  <div id="ilLog" aria-live="polite">Local keyword parser (no AI call, no eval). Type "help".</div>
+</div>
+<script id="iron-lab-master">
+// ═════ IRON LAB MASTER module — additive, isolated. Uses existing S / scene / camera / renderer; adds NO render loop. ═════
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const IL={mode:'holo',op:1,glow:1,ov:{box:true,rings:true,axes:false},amt:0,tgt:0,grp:null,dist:2,
+  focus:new THREE.Vector3(),focusGoal:new THREE.Vector3(),radGoal:null,clear0:null,clearA0:1,
+  box:new THREE.Box3(),tmpV:new THREE.Vector3(),tmpS:new THREE.Vector3(),lastOv:0,lastUi:0,selSig:'',editing:false};
+try{IL.clear0=renderer.getClearColor(new THREE.Color()).clone();IL.clearA0=renderer.getClearAlpha();}catch(e){}
+const groups=()=>S.holoGroup?S.holoGroup.children.filter(c=>c.userData&&c.userData.basePos):[];
+const selGroup=()=>groups().find(g=>g.userData.objIdx===S.selObj)||null;
+const log=t=>{const l=$('ilLog');if(l)l.textContent=t;};
+const note=t=>{try{notify(t)}catch(e){}};
+const BP=new THREE.Color(0x9fd2ff);
+
+// ── render modes: acts on real materials of the real geometry ──
+function applyMode(){
+  if(!S.holoGroup)return;
+  const bp=IL.mode==='blueprint',solid=IL.mode==='solid';
+  groups().forEach(g=>{
+    const o=S.objects[g.userData.objIdx]||{};
+    const base=(o.material&&o.material.color)||S.colorHex;
+    g.traverse(n=>{
+      if(n===g||n.isSprite)return;
+      const m=n.material;if(!m)return;
+      if(m.uniforms&&m.uniforms.color){
+        m.uniforms.color.value.set(bp?BP:base);
+        if(n.isLineSegments){m.uniforms.opacity.value=Math.min(1,.85*IL.op*(bp?1.15:1));n.visible=true;}
+        else if(m.uniforms.fresnelPow){m.uniforms.opacity.value=Math.min(1,.1*IL.op*(solid?2.2:1));n.visible=solid||(S.solidOn&&!bp);}
+        return;
+      }
+      if(m.color)m.color.set(bp?BP:base);
+      if(n.userData.isGlow){n.visible=!bp;m.opacity=Math.min(1,.12*IL.glow);}
+      else if(n.isPoints||(n.isMesh&&n.userData.noRefl)){n.visible=!bp;m.opacity=.85*IL.op;}
+      else if(n.isLine||n.isLineSegments){m.opacity=Math.min(1,.5*IL.op+(bp?.3:0));}
+    });
+  });
+  try{if(IL.clear0){if(bp)renderer.setClearColor(0x04163a,1);else renderer.setClearColor(IL.clear0,IL.clearA0);}}catch(e){}
+  try{if(bloomPass&&IL.glow!==1&&S.bloomOn)bloomPass.strength=Math.max(0,bloomPass.strength);}catch(e){}
+  document.querySelectorAll('[data-ilmode]').forEach(b=>b.classList.toggle('on',b.dataset.ilmode===IL.mode));
+  const hm=$('ihMode');if(hm)hm.textContent=bp?'BLUEPRINT':solid?'SOLID+WIRE':'HOLOGRAM';
+}
+function setMode(m){
+  if(!['holo','blueprint','solid'].includes(m))return false;
+  IL.mode=m;
+  if(m==='solid'&&!S.solidOn&&S.objects.length){try{togSolid();}catch(e){log('Solid rebuild failed: '+e.message);}}
+  applyMode();return true;
+}
+// keep modes after any scene rebuild (generate / forge / import) — wrap, don't replace
+const _bh=window.buildHolo;
+window.buildHolo=function(){
+  const r=_bh.apply(this,arguments);
+  try{afterBuild();}catch(e){console.warn('IL afterBuild',e);}
+  return r;
+};
+function afterBuild(){
+  IL.grp=null;IL.amt=0;IL.tgt=0;
+  groups().forEach(g=>{const o=S.objects[g.userData.objIdx];if(o&&Array.isArray(o.rotation)&&o.rotation.length===3)g.rotation.set(...o.rotation.map(d=>(+d||0)*Math.PI/180));});
+  applyMode();syncUi(true);
+}
+
+// ── overlays: bounds / rings / axes drawn from the real selected geometry ──
+function mkOverlay(){
+  IL.og=new THREE.Group();IL.og.name='IL_OVERLAY';
+  IL.bh=new THREE.Box3Helper(new THREE.Box3(),0xffd36b);
+  const circ=r=>{const p=[];for(let i=0;i<=96;i++){const a=i/96*Math.PI*2;p.push(Math.cos(a)*r,0,Math.sin(a)*r);}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));return g;};
+  const mat=()=>new THREE.LineBasicMaterial({color:0x66e6ff,transparent:true,opacity:.5,depthWrite:false});
+  IL.r1=new THREE.Line(circ(1),mat());IL.r2=new THREE.Line(circ(1.3),mat());IL.r2.material.opacity=.28;
+  IL.ax=new THREE.AxesHelper(1);
+  [IL.bh,IL.r1,IL.r2,IL.ax].forEach(o=>{o.userData.noRefl=true;IL.og.add(o);});
+  IL.og.visible=false;scene.add(IL.og);
+}
+function updateOverlay(){
+  const tgt=selGroup()||S.holoGroup;
+  if(!tgt||!S.holoGroup){IL.og.visible=false;return;}
+  IL.box.setFromObject(tgt);
+  if(IL.box.isEmpty()){IL.og.visible=false;return;}
+  IL.og.visible=true;
+  const sz=IL.box.getSize(IL.tmpS),c=IL.box.getCenter(IL.tmpV),maxD=Math.max(sz.x,sz.y,sz.z,.2);
+  IL.bh.box.copy(IL.box);IL.bh.visible=IL.ov.box;
+  const rr=Math.max(sz.x,sz.z)*.62+.15;
+  [IL.r1,IL.r2].forEach(r=>{r.visible=IL.ov.rings;r.position.set(c.x,IL.box.min.y,c.z);});
+  IL.r1.scale.setScalar(rr);IL.r2.scale.setScalar(rr);
+  IL.ax.visible=IL.ov.axes;IL.ax.position.set(IL.box.min.x,IL.box.min.y,IL.box.min.z);IL.ax.scale.setScalar(maxD*.7);
+  const o=S.objects[S.selObj];
+  const nm=o&&selGroup()?(o.name||'OBJ-'+S.selObj):'WHOLE SCENE';
+  $('ilRead').textContent=nm.toUpperCase()+'\nsize W '+sz.x.toFixed(2)+' × H '+sz.y.toFixed(2)+' × D '+sz.z.toFixed(2)+' u\ncentre '+c.x.toFixed(2)+', '+c.y.toFixed(2)+', '+c.z.toFixed(2)+'\nparts '+groups().length+' · units = scene units (world bounding box)';
+}
+
+// ── real exploded view: base-transform snapshot, smooth, no accumulation ──
+function snapshot(){
+  IL.grp=S.holoGroup;IL.amt=0;
+  const gs=groups();if(!gs.length)return;
+  const all=new THREE.Box3().setFromObject(S.holoGroup),oc=all.getCenter(new THREE.Vector3());
+  const rad=all.isEmpty()?1:all.getBoundingSphere(new THREE.Sphere()).radius;
+  IL.dist=Math.max(.8,rad*1.1);
+  gs.forEach(g=>{
+    const b=new THREE.Box3().setFromObject(g),c=b.getCenter(new THREE.Vector3()).sub(oc);
+    if(c.length()<1e-3){const e=S.explodeDirs[g.userData.objIdx]||{x:0,y:1,z:0};c.set(e.x,e.y,e.z);}
+    if(c.length()<1e-6)c.set(0,1,0);
+    g.userData.ilDir=c.normalize();
+  });
+}
+function explodeStep(dt){
+  const gs=groups();
+  if(IL.grp!==S.holoGroup)snapshot();
+  if(gs.length<2){IL.amt=0;return;}
+  IL.amt+=(IL.tgt-IL.amt)*Math.min(1,dt*.006);
+  if(Math.abs(IL.tgt-IL.amt)<.0008)IL.amt=IL.tgt;
+  const k=IL.amt*IL.dist;
+  gs.forEach(g=>{const b=g.userData.basePos,d=g.userData.ilDir;if(!d)return;g.position.set(b[0]+d.x*k,b[1]+d.y*k,b[2]+d.z*k);});
+  S.exploding=IL.tgt>IL.amt+.001&&IL.tgt>0&&IL.amt<IL.tgt;S.assembling=IL.tgt<IL.amt-.001;
+}
+window.trigExplode=function(){
+  if(!S.holoGroup){note('NO HOLOGRAM');return false;}
+  if(groups().length<2){note('EXPLODE NEEDS ≥2 COMPONENTS');log('Exploded view needs a multi-part model (this scene has '+groups().length+' component). Add parts in Model Forge or generate an assembly.');return false;}
+  const v=+$('ilExp').value/100*1.5;IL.tgt=v>0?v:.9;note('💥 DECONSTRUCT');return true;
+};
+window.trigAssemble=function(){IL.tgt=0;if(S.holoGroup)note('◎ ASSEMBLING');};
+window.updateExplode=function(dt){try{explodeStep(dt);tick();}catch(e){console.warn('IL tick',e);}};
+function tick(){
+  const t=performance.now();
+  if(t-IL.lastOv>110){IL.lastOv=t;try{updateOverlay();}catch(e){}}
+  if(t-IL.lastUi>350){IL.lastUi=t;syncUi(false);}
+}
+
+// ── camera focus (replaces hard-coded lookAt(0,0,0); same orbit maths) ──
+window.updateCam=function(){
+  if(!S.tourActive&&S.autoRotate)S.camTheta+=.00024*_dtMs;
+  updateTour();
+  IL.focus.lerp(IL.focusGoal,.12);
+  if(IL.radGoal!=null){S.camRadius+=(IL.radGoal-S.camRadius)*.12;if(Math.abs(IL.radGoal-S.camRadius)<.03)IL.radGoal=null;}
+  const f=IL.focus;
+  camera.position.set(f.x+S.camRadius*Math.sin(S.camTheta)*Math.cos(S.camPhi),f.y+S.camRadius*Math.sin(S.camPhi),f.z+S.camRadius*Math.cos(S.camTheta)*Math.cos(S.camPhi));
+  camera.lookAt(f);
+  const e=$('tbCam');if(e)e.textContent=Math.round((S.camTheta*180/Math.PI)%360)+'°';
+};
+function focusSel(){
+  const tgt=selGroup()||S.holoGroup;if(!tgt){note('NO HOLOGRAM');return;}
+  const b=new THREE.Box3().setFromObject(tgt);if(b.isEmpty())return;
+  const r=b.getBoundingSphere(new THREE.Sphere()).radius;
+  IL.focusGoal.copy(b.getCenter(new THREE.Vector3()));IL.radGoal=Math.min(30,Math.max(2.2,r*2.8));
+  note(selGroup()?'◎ FOCUS: SELECTED OBJECT':'◎ FOCUS: WHOLE MODEL');
+}
+function defaultView(){IL.focusGoal.set(0,0,0);IL.radGoal=null;resetCam();}
+window.ironFocus=focusSel;
+const _rc=window.resetCam;
+window.resetCam=function(){IL.focusGoal.set(0,0,0);IL.radGoal=null;return _rc.apply(this,arguments);};
+window.ironBlueprint=function(){setMode(IL.mode==='blueprint'?'holo':'blueprint');note(IL.mode==='blueprint'?'BLUEPRINT MODE':'HOLOGRAM MODE');
+  document.querySelectorAll('#ironHud .ih-btn').forEach(b=>{if(b.textContent.includes('BLUEPRINT'))b.classList.toggle('active',IL.mode==='blueprint');});};
+
+// ── inspector: real transforms written to the scene AND to S.objects (so save/export keeps them) ──
+const F=(id,v)=>{const e=$(id);if(e&&document.activeElement!==e)e.value=(+v).toFixed(2);};
+function syncUi(force){
+  const sel=$('ilSel');if(!sel)return;
+  const sig=(S.objects||[]).map(o=>o.name||'').join('|');
+  if(force||sig!==IL.selSig){
+    IL.selSig=sig;sel.innerHTML='';
+    const w=document.createElement('option');w.value='-1';w.textContent='— whole scene —';sel.appendChild(w);
+    (S.objects||[]).forEach((o,i)=>{const op=document.createElement('option');op.value=String(i);op.textContent=(i+1)+'. '+(o.name||'OBJ-'+i);sel.appendChild(op);});
+  }
+  const want=String(S.selObj==null?-1:S.selObj);
+  if(sel.value!==want&&document.activeElement!==sel)sel.value=[...sel.options].some(o=>o.value===want)?want:'-1';
+  const g=selGroup(),o=g&&S.objects[g.userData.objIdx];
+  ['ilPx','ilPy','ilPz','ilRx','ilRy','ilRz','ilSx','ilSy','ilSz'].forEach(id=>{const e=$(id);if(e)e.disabled=!g;});
+  if(g&&o){
+    const b=g.userData.basePos;F('ilPx',b[0]);F('ilPy',b[1]);F('ilPz',b[2]);
+    F('ilRx',g.rotation.x*180/Math.PI);F('ilRy',g.rotation.y*180/Math.PI);F('ilRz',g.rotation.z*180/Math.PI);
+    F('ilSx',g.scale.x);F('ilSy',g.scale.y);F('ilSz',g.scale.z);
+    const c=$('ilColor');if(c&&document.activeElement!==c&&o.material&&/^#[0-9a-f]{6}$/i.test(o.material.color||''))c.value=o.material.color;
+  }
+}
+function num(id,def){const v=parseFloat($(id).value);return Number.isFinite(v)?v:def;}
+function applyTransform(){
+  const g=selGroup();if(!g)return;const o=S.objects[g.userData.objIdx];if(!o)return;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const pos=[clamp(num('ilPx',0),-50,50),clamp(num('ilPy',0),-50,50),clamp(num('ilPz',0),-50,50)];
+  const sc=[clamp(num('ilSx',1),.05,20),clamp(num('ilSy',1),.05,20),clamp(num('ilSz',1),.05,20)];
+  const rot=[num('ilRx',0),num('ilRy',0),num('ilRz',0)];
+  g.userData.basePos=pos;o.position=pos.slice();g.scale.set(sc[0],sc[1],sc[2]);o.scale=sc.slice();
+  g.rotation.set(rot[0]*Math.PI/180,rot[1]*Math.PI/180,rot[2]*Math.PI/180);o.rotation=rot.slice();
+  if(IL.amt===0)g.position.set(pos[0],pos[1],pos[2]);
+  IL.grp=null;   // re-derive explode directions from the new layout
+  updateOverlay();
+}
+function setColor(hex,all){
+  if(!/^#[0-9a-f]{6}$/i.test(hex))return false;
+  const idxs=(!all&&selGroup())?[S.selObj]:S.objects.map((_,i)=>i);
+  idxs.forEach(i=>{const o=S.objects[i];if(o){o.material=o.material||{};o.material.color=hex;}});
+  applyMode();return true;
+}
+function scaleSel(f){
+  const g=selGroup();if(!g)return false;const o=S.objects[g.userData.objIdx];
+  g.scale.multiplyScalar(f);g.scale.clampScalar(.05,20);o.scale=[g.scale.x,g.scale.y,g.scale.z];IL.grp=null;return true;
+}
+
+// ── local command parser: fixed keyword → existing function; never evals text ──
+const COLORS={cyan:'#00ffff',blue:'#3d8bff',ice:'#88ddff',violet:'#b044ff',purple:'#b044ff',red:'#ff3366',green:'#00ff88',amber:'#ffd700',yellow:'#ffd700',orange:'#ff6600',white:'#ccddff'};
+function runCmd(raw){
+  const t=String(raw||'').trim().toLowerCase().slice(0,120);if(!t)return;
+  let m;
+  if(/^help\b/.test(t))return log('Commands: blueprint · hologram · solid · explode · assemble · focus · reset view · list · hide/show · bigger/smaller · color <name|#hex> · quality low/balanced/high');
+  if(/blueprint/.test(t)){setMode('blueprint');return log('Blueprint mode ON.');}
+  if(/\b(hologram|holo)\b/.test(t)){setMode('holo');return log('Hologram mode ON.');}
+  if(/solid/.test(t)){setMode('solid');return log('Solid+wire mode ON.');}
+  if(/explode|deconstruct/.test(t))return log(window.trigExplode()?'Exploding '+groups().length+' components.':'Not exploded: needs a multi-part model.');
+  if(/assemble|restore/.test(t)){window.trigAssemble();return log('Reassembling to saved transforms.');}
+  if(/reset|default/.test(t)){defaultView();return log('View reset.');}
+  if(/focus/.test(t)){focusSel();return log('Focus set.');}
+  if(/list|hierarchy/.test(t))return log(S.objects.length?S.objects.map((o,i)=>(i+1)+'. '+(o.name||'OBJ-'+i)).join('\n'):'Scene is empty.');
+  if(/\b(hide|show)\b/.test(t)){const g=selGroup();if(!g)return log('Select an object first.');g.visible=!g.visible;return log((g.visible?'Shown: ':'Hidden: ')+(S.objects[g.userData.objIdx].name||'object'));}
+  if(/bigger|larger|increase/.test(t))return log(scaleSel(1.15)?'Selected object scaled ×1.15.':'Select an object first.');
+  if(/smaller|shrink|decrease/.test(t))return log(scaleSel(1/1.15)?'Selected object scaled ×0.87.':'Select an object first.');
+  if((m=t.match(/colou?r\s+(#[0-9a-f]{6}|[a-z]+)/))){const hex=COLORS[m[1]]||m[1];return log(setColor(hex,false)?'Colour set to '+hex+(selGroup()?' (selected object).':' (all objects).'):'Unknown colour "'+m[1]+'". Use a name ('+Object.keys(COLORS).join(', ')+') or #rrggbb.');}
+  if((m=t.match(/quality\s+(low|balanced|high)/))){const k={low:'performance',balanced:'balanced',high:'ultra'}[m[1]];applyQuality(k);return log('Quality: '+m[1]);}
+  log('Unsupported command: "'+t.slice(0,40)+'". Type "help".');
+}
+
+// ── wiring (guarded: every element is looked up before use) ──
+function wire(){
+  const on=(id,ev,fn)=>{const e=$(id);if(e)e.addEventListener(ev,fn);else console.warn('IL missing #'+id);};
+  const panel=$('ilPanel'),tog=$('ilToggle');
+  tog.addEventListener('click',()=>{const o=panel.classList.toggle('open');tog.setAttribute('aria-expanded',String(o));if(o)syncUi(true);});
+  document.querySelectorAll('[data-ilmode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.ilmode)));
+  document.querySelectorAll('[data-ilov]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.ilov;IL.ov[k]=!IL.ov[k];b.classList.toggle('on',IL.ov[k]);updateOverlay();}));
+  document.querySelectorAll('[data-ilq]').forEach(b=>b.addEventListener('click',()=>{applyQuality(b.dataset.ilq);document.querySelectorAll('[data-ilq]').forEach(x=>x.classList.toggle('on',x===b));}));
+  on('ilOp','input',e=>{IL.op=e.target.value/100;applyMode();});
+  on('ilGlow','input',e=>{IL.glow=e.target.value/100;applyMode();});
+  on('ilColor','input',e=>setColor(e.target.value,false));
+  on('ilColorAll','click',()=>setColor($('ilColor').value,true));
+  on('ilSel','change',e=>{S.selObj=parseInt(e.target.value,10);try{if(S.selObj>=0)highlightObj(S.selObj);else clearHighlight();}catch(x){}applyMode();syncUi(true);});
+  ['ilPx','ilPy','ilPz','ilRx','ilRy','ilRz','ilSx','ilSy','ilSz'].forEach(id=>on(id,'change',applyTransform));
+  on('ilFocus','click',focusSel);on('ilView','click',defaultView);
+  on('ilVis','click',()=>runCmd('hide'));
+  on('ilExplode','click',()=>window.trigExplode());on('ilAssemble','click',()=>window.trigAssemble());
+  on('ilExp','input',e=>{if(IL.tgt>0||e.target.value>0)IL.tgt=e.target.value/100*1.5;});
+  on('ilRun','click',()=>{runCmd($('ilCmd').value);$('ilCmd').value='';});
+  on('ilCmd','keydown',e=>{e.stopPropagation();if(e.key==='Enter'){runCmd(e.target.value);e.target.value='';}});
+  // stop viewport shortcuts firing while typing in the panel
+  panel.addEventListener('keydown',e=>{if(/INPUT|SELECT/.test(e.target.tagName))e.stopPropagation();});
+  if(window.innerWidth>900){panel.classList.add('open');tog.setAttribute('aria-expanded','true');}
+  try{const q=localStorage.getItem('hololab_quality');const b=document.querySelector('[data-ilq="'+q+'"]');if(b)b.classList.add('on');}catch(e){}
+}
+function projectPayload(){
+  const model=typeof mfPayload==='function'?mfPayload():{subject:S.subject||'HOLOLAB SCENE',description:S.description||'',objects:S.objects||[],labels:S.labels||[]};
+  return {format:'HOLOLAB-PROJECT-2',savedAt:new Date().toISOString(),model,
+    view:{camTheta:S.camTheta,camPhi:S.camPhi,camRadius:S.camRadius,autoRotate:!!S.autoRotate,quality:localStorage.getItem('hololab_quality')||'adaptive',mode:IL.mode,opacity:IL.op,glow:IL.glow,explode:IL.tgt||0,overlays:IL.ov}};
+}
+function projectStatus(msg){const e=$('ilProjectStatus');if(e)e.textContent=msg;}
+function saveProjectLocal(){try{localStorage.setItem('hololab_project_v2',JSON.stringify(projectPayload()));projectStatus('Saved locally in this browser. Export JSON for a separate backup.');note('PROJECT SAVED LOCALLY');}catch(e){projectStatus('Save failed: browser storage may be full. Export JSON instead.');}}
+function restoreProjectLocal(){try{const raw=localStorage.getItem('hololab_project_v2');if(!raw){projectStatus('No local project save found yet.');return;}restoreProject(JSON.parse(raw));projectStatus('Project and view settings restored from this browser.');}catch(e){projectStatus('Restore failed: '+e.message);}}
+function restoreProject(data){if(!data||data.format!=='HOLOLAB-PROJECT-2'||!data.model)throw new Error('This is not a HOLOLAB project backup.');if(!confirm('Restore this project? The current hologram scene will be replaced.'))return;loadData(data.model);const v=data.view||{};if(Number.isFinite(v.camTheta))S.camTheta=v.camTheta;if(Number.isFinite(v.camPhi))S.camPhi=v.camPhi;if(Number.isFinite(v.camRadius))S.camRadius=Math.max(2,Math.min(30,v.camRadius));if(typeof v.autoRotate==='boolean')S.autoRotate=v.autoRotate;if(v.quality&&_QUAL[v.quality])applyQuality(v.quality);if(v.mode&&['holo','blueprint','solid'].includes(v.mode))setMode(v.mode);if(Number.isFinite(v.opacity)){IL.op=v.opacity;const e=$('ilOp');if(e)e.value=Math.round(v.opacity*100);applyMode();}if(Number.isFinite(v.glow)){IL.glow=v.glow;const e=$('ilGlow');if(e)e.value=Math.round(v.glow*100);applyMode();}if(v.overlays&&typeof v.overlays==='object'){Object.keys(IL.ov).forEach(k=>{if(typeof v.overlays[k]==='boolean')IL.ov[k]=v.overlays[k];const b=document.querySelector('[data-ilov="'+k+'"]');if(b)b.classList.toggle('on',IL.ov[k]);});updateOverlay();}if(Number.isFinite(v.explode)&&v.explode>0){IL.tgt=Math.min(1.5,v.explode);const e=$('ilExp');if(e)e.value=Math.round(IL.tgt/1.5*100);}else IL.tgt=0;S.selObj=0;IL.grp=null;syncUi(true);}
+function exportProject(){try{const blob=new Blob([JSON.stringify(projectPayload(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='hololab-project-'+Date.now()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);projectStatus('JSON export started. Keep the file as a backup.');}catch(e){projectStatus('Export failed: '+e.message);}}
+function importProjectFile(ev){const f=ev.target.files&&ev.target.files[0];if(!f)return;if(f.size>5*1024*1024){projectStatus('Import blocked: file exceeds 5 MB.');ev.target.value='';return;}const r=new FileReader();r.onload=()=>{try{restoreProject(JSON.parse(String(r.result||'')));projectStatus('Imported project file: '+f.name);}catch(e){projectStatus('Import failed: '+e.message);}finally{ev.target.value='';}};r.onerror=()=>projectStatus('Could not read project file.');r.readAsText(f);}
+function init(){mkOverlay();wire();syncUi(true);if(S.holoGroup)afterBuild();window.IRON_LAB={IL,setMode,runCmd,focusSel,applyMode};
+  const on=(id,ev,fn)=>{const e=$(id);if(e)e.addEventListener(ev,fn);};
+  on('ilSaveProject','click',saveProjectLocal);on('ilRestoreProject','click',restoreProjectLocal);on('ilExportProject','click',exportProject);on('ilImportProject','click',()=>$('ilProjectFile')&&$('ilProjectFile').click());on('ilProjectFile','change',importProjectFile);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0));else setTimeout(init,0);
+})();
+</script>
+
+<script>
+/* HOLOLAB HAND CONTROL PATCH v2 — filtered orbit + two-hand zoom; lazy-loaded to keep idle cost low */
+(()=>{
+  let hcStream=null,hcHands=null,hcRaf=0,hcEnabled=false,hcBusy=false,hcLastFist=0,hcWasFist=false;
+  let hcPrev=null,hcSmoothPoint=null,hcTwoBase=null,hcTwoRadius=null,hcLastUi=0,hcRotateMode='slow',hcTargetTheta=null,hcTargetPhi=null,hcMotionRaf=0;
+  const $=id=>document.getElementById(id);
+  function hcStatus(text,live=false){const el=$('hcStatus'),dot=$('hcDot');if(el)el.textContent=text;if(dot)dot.classList.toggle('live',!!live);}
+  window.setHandRotateMode=function(mode){hcRotateMode=mode==='fast'?'fast':'slow';const slow=$('hcSlow'),fast=$('hcFast'),hint=$('hcModeHint');if(slow)slow.classList.toggle('active',hcRotateMode==='slow');if(fast)fast.classList.toggle('active',hcRotateMode==='fast');if(hint)hint.textContent=hcRotateMode==='fast'?'FAST · Tiny hand movements create a larger rotation.':'SLOW · Move your hand farther for controlled, precise rotation.';};
+  const smoothFactor=()=>{const e=$('hcSmooth');return e?Math.max(.08,Math.min(.90,1-Number(e.value)/100)):.32;};
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  function hcLoadScript(src){return new Promise((resolve,reject)=>{const existing=[...document.scripts].find(x=>x.src===src);if(existing){if(existing.dataset.loaded==='1'||window.Hands)return resolve();existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',reject,{once:true});return;}const sc=document.createElement('script');sc.src=src;sc.async=true;sc.onload=()=>{sc.dataset.loaded='1';resolve();};sc.onerror=()=>reject(new Error('Could not load hand-tracking library'));document.head.appendChild(sc);});}
+  function hcDist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+  function hcPalm(hand){return {x:(hand[0].x+hand[5].x+hand[9].x+hand[13].x+hand[17].x)/5,y:(hand[0].y+hand[5].y+hand[9].y+hand[13].y+hand[17].y)/5};}
+  function hcMotionLoop(){if(!hcEnabled)return; if(hcTargetTheta!==null){const f=hcRotateMode==='fast'?.42:.28;S.camTheta+=(hcTargetTheta-S.camTheta)*f;S.camPhi+=(hcTargetPhi-S.camPhi)*f;if(Math.abs(hcTargetTheta-S.camTheta)<.00008&&Math.abs(hcTargetPhi-S.camPhi)<.00008){S.camTheta=hcTargetTheta;S.camPhi=hcTargetPhi;}}hcMotionRaf=requestAnimationFrame(hcMotionLoop);}
+  function hcResults(results){
+    if(!hcEnabled)return;
+    const now=performance.now(),hands=results.multiHandLandmarks||[],hand=hands[0];
+    if(!hand){if(now-hcLastUi>300){if($('hcGesture'))$('hcGesture').textContent='NO HAND';hcStatus('CAMERA ON · SHOW HAND(S)',true);hcLastUi=now;}hcPrev=null;hcSmoothPoint=null;hcTwoBase=null;hcTwoRadius=null;hcWasFist=false;return;}
+    const palm=hcPalm(hand),alpha=smoothFactor();
+    // Exponential smoothing filters landmark jitter; the dead-zone prevents tiny tremors becoming camera movement.
+    if(!hcSmoothPoint)hcSmoothPoint={x:palm.x,y:palm.y};
+    hcSmoothPoint.x+=(palm.x-hcSmoothPoint.x)*alpha;hcSmoothPoint.y+=(palm.y-hcSmoothPoint.y)*alpha;
+    if(hcTargetTheta===null){hcTargetTheta=S.camTheta;hcTargetPhi=S.camPhi;}
+    const other=hands.length>1?hands[1]:null;
+    let gesture='OPEN HAND · ROTATE';
+    if(other){
+      // Two-hand separation controls camera distance; a filtered baseline prevents sudden zoom jumps.
+      const p2=hcPalm(other),sep=Math.max(.04,Math.hypot(palm.x-p2.x,palm.y-p2.y));
+      if(hcTwoBase===null){hcTwoBase=sep;hcTwoRadius=S.camRadius;}
+      const ratio=sep/hcTwoBase;S.camRadius=clamp(hcTwoRadius/ratio,2.2,22);
+      // Midpoint movement still orbits the camera when both hands move together.
+      const mid={x:(palm.x+p2.x)/2,y:(palm.y+p2.y)/2};
+      if(hcPrev){const dx=mid.x-hcPrev.x,dy=mid.y-hcPrev.y,sens=hcRotateMode==='fast'?13:4.2;if(Math.abs(dx)+Math.abs(dy)>.0008){hcTargetTheta-=dx*sens;hcTargetPhi=clamp(hcTargetPhi+dy*sens*.72,-Math.PI/2.4,Math.PI/2.4);}}
+      hcPrev=mid;gesture='TWO HANDS · ORBIT + ZOOM';hcWasFist=false;
+    }else{
+      hcTwoBase=null;hcTwoRadius=null;
+      const thumb=hand[4],index=hand[8],middle=hand[12],ring=hand[16],pinky=hand[20],pinch=hcDist(thumb,index);
+      if(pinch<.20){S.camRadius=clamp(S.camRadius+(pinch-.105)*.12,2.2,22);gesture='PINCH · ZOOM';hcPrev=null;}
+      else{
+        if(hcPrev){const dx=hcSmoothPoint.x-hcPrev.x,dy=hcSmoothPoint.y-hcPrev.y;const dead=hcRotateMode==='fast'?.00055:.0011,sens=hcRotateMode==='fast'?13:4.2;if(Math.abs(dx)+Math.abs(dy)>dead){hcTargetTheta-=dx*sens;hcTargetPhi=clamp(hcTargetPhi+dy*sens*.72,-Math.PI/2.4,Math.PI/2.4);}}
+        hcPrev={x:hcSmoothPoint.x,y:hcSmoothPoint.y};
+      }
+      const wrist=hand[0],palmRef=hand[9],curled=[index,middle,ring,pinky].filter(t=>hcDist(t,wrist)<hcDist(palmRef,wrist)*1.08).length;
+      const fist=curled>=3&&pinch>.045;
+      if(fist&&!hcWasFist&&now-hcLastFist>1400){hcLastFist=now;if(S.exploding||S.assembling)trigAssemble();else trigExplode();}
+      hcWasFist=fist;if(fist)gesture='FIST · EXPLODE / ASSEMBLE';else if(pinch<.20)gesture='PINCH · ZOOM';
+    }
+    if(now-hcLastUi>120){if($('hcGesture'))$('hcGesture').textContent=gesture;hcStatus('TRACKING ACTIVE · '+hands.length+' HAND'+(hands.length===1?'':'S'),true);hcLastUi=now;}
+  }
+  async function hcStop(){hcEnabled=false;if(hcRaf)cancelAnimationFrame(hcRaf);if(hcMotionRaf)cancelAnimationFrame(hcMotionRaf);hcRaf=hcMotionRaf=0;hcBusy=false;try{if(hcStream)hcStream.getTracks().forEach(t=>t.stop());}catch(e){}hcStream=null;try{if($('hcVideo'))$('hcVideo').srcObject=null;}catch(e){}try{if(hcHands&&hcHands.close)await hcHands.close();}catch(e){}hcHands=null;hcPrev=hcSmoothPoint=hcTwoBase=hcTwoRadius=null;hcTargetTheta=hcTargetPhi=null;hcWasFist=false;const b=$('bHandTrack');if(b){b.textContent='✋ HAND CONTROL: OFF';b.classList.remove('on');}const start=$('hcStart');if(start)start.textContent='ENABLE CAMERA';hcStatus('OFFLINE · CAMERA STOPPED',false);}
+  window.toggleHandTracking=async function(force){const panel=$('handControlPanel');if(!panel)return;if(force===false){await hcStop();panel.hidden=true;return;}panel.hidden=false;if(hcEnabled)return;const b=$('bHandTrack');if(b){b.textContent='✋ HAND CONTROL: LOADING…';b.classList.add('on');}const start=$('hcStart');if(start)start.textContent='STARTING…';hcStatus('REQUESTING CAMERA PERMISSION');
+    try{if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('Camera needs HTTPS or localhost in a supported browser.');hcStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:320},height:{ideal:240},frameRate:{ideal:15,max:18}},audio:false});const video=$('hcVideo');video.srcObject=hcStream;await video.play();await hcLoadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js');if(!window.Hands)throw new Error('MediaPipe Hands did not initialize.');hcHands=new window.Hands({locateFile:file=>'https://cdn.jsdelivr.net/npm/@mediapipe/hands/'+file});hcHands.setOptions({maxNumHands:2,modelComplexity:0,minDetectionConfidence:.58,minTrackingConfidence:.55});hcHands.onResults(hcResults);hcEnabled=true;hcBusy=false;if(b){b.textContent='✋ HAND CONTROL: ON';b.classList.add('on');}if(start)start.textContent='DISABLE CAMERA';hcStatus('CAMERA ON · SHOW HAND(S)',true);hcMotionRaf=requestAnimationFrame(hcMotionLoop);
+      const loop=async()=>{if(!hcEnabled||!hcHands)return;if(!hcBusy&&video.readyState>=2){hcBusy=true;try{await hcHands.send({image:video});}catch(e){}hcBusy=false;}if(hcEnabled)hcRaf=requestAnimationFrame(loop);};hcRaf=requestAnimationFrame(loop);
+    }catch(err){await hcStop();panel.hidden=false;hcStatus('START FAILED · CHECK PERMISSION',false);if(start)start.textContent='TRY AGAIN';if(typeof notify==='function')notify('HAND CONTROL: '+(err&&err.message?err.message:'Could not start camera'),4500);else alert(err.message||'Could not start camera');}};
+  const smooth=$('hcSmooth'),smoothVal=$('hcSmoothVal');if(smooth&&smoothVal)smooth.addEventListener('input',()=>smoothVal.textContent=smooth.value+'%');
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&hcEnabled)hcStop();});window.addEventListener('pagehide',()=>{if(hcStream)hcStream.getTracks().forEach(t=>t.stop());});
+})();
 </script>
 </body>
 </html>
